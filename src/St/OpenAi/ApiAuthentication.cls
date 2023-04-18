@@ -26,8 +26,8 @@ Method ValidateApiKey() As %Boolean
     {
         return $$$NO
     }
-
-    #; set obj=##class(OpenAiApi())
+    set auth = ##class(ApiAuthentication).%New(..ApiKey, ..OpenAIOrganization)
+    set obj=##class(St.OpenAi.OpenAiAPi).%New(auth)
 }
 
 }
