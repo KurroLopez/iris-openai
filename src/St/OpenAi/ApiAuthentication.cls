@@ -1,11 +1,5 @@
-Class St.OpenAi.ApiAuthentication Extends %Library.RegisteredObject
+Class St.OpenAi.ApiAuthentication Extends St.OpenAi.Abstract.ApiAuthentication
 {
-
-/// The API Key, required to access the API endpoint.
-Property ApiKey As %String(MAXLEN = "");
-
-/// Organization ID
-Property OpenAIOrganization As %String(MAXLEN = "");
 
 /// New parameters to init the auth api
 Method %OnNew(apiKey As %String = "", organizationId As %String = "", Output valid As %Status) As %Status
@@ -26,8 +20,8 @@ Method ValidateApiKey() As %Boolean
     {
         return $$$NO
     }
-    set auth = ##class(ApiAuthentication).%New(..ApiKey, ..OpenAIOrganization)
-    set obj=##class(St.OpenAi.OpenAiAPi).%New(auth)
+    set auth = ..%ConstructClone()
+    set obj=##class(St.OpenAi.OpenAiAPI).%New(auth)
 }
 
 }
