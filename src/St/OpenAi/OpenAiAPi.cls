@@ -2,7 +2,9 @@ Class St.OpenAi.OpenAiAPI Extends St.OpenAi.Abstract.OpenAiAPI
 {
 
 /// Initialize Url Format
-Property ApiUrlFormat As %String [ InitialExpression = "https://api.openai.com/%1/%2" ];
+Property ApiUrlFormat As %String [ InitialExpression = "%1/%2" ];
+
+Property ApiServer As %String [ InitialExpression = "api.openai.com" ];
 
 /// Initialize Version
 Property ApiVersion As %String [ InitialExpression = "v1" ];

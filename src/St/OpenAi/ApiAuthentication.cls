@@ -21,7 +21,11 @@ Method ValidateApiKey() As %Boolean
         return $$$NO
     }
     set auth = ..%ConstructClone()
-    set obj=##class(St.OpenAi.OpenAiAPI).%New(auth)
+    set api=##class(St.OpenAi.OpenAiAPI).%New(auth)
+
+    set result = api.Models.GetModels()
+
+    return (result.Count() > 0)
 }
 
 }

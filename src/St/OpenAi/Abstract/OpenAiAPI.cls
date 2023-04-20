@@ -2,14 +2,22 @@ Class St.OpenAi.Abstract.OpenAiAPI Extends %Library.RegisteredObject [ Abstract 
 {
 
 /// Base url for OpenAI
-/// for OpenAI, should be "https://api.openai.com/{0}/{1}"
+/// for OpenAI, should be "{0}/{1}" (version/method)
 Property ApiUrlFormat As %String(MAXLEN = "");
 
 /// Version of Rest API
+/// for OpenAI, should be "v1"
 Property ApiVersion As %String;
+
+/// Server name of OpenAI
+/// for OpenAI, should be "api.openai.com"
+Property ApiServer As %String(MAXLEN = "");
 
 /// The API authentication information to use for API calls
 Property Auth As St.OpenAi.Abstract.ApiAuthentication;
+
+/// Optionally provide an %Net.HttpRequest to create the client to send requests.
+Property HttpClientFactory As %Net.HttpRequest;
 
 /// The API endpoint for querying available Engines/models
 Property Models As St.OpenAi.Abstract.ModelsEndpoint;

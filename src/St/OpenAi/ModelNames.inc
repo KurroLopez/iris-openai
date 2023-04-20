@@ -1,5 +1,6 @@
 ROUTINE St.OpenAi.ModelNames [Type=INC]
 
+/// Model names
 #Define AdaText "text-ada-001"
 #Define BabbageText "text-babbage-001"
 #Define CurieText "text-curie-001"

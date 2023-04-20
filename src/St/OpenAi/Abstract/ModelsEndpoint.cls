@@ -8,7 +8,7 @@ Method RetrieveModelDetails(id As %String) As St.OpenAi.Model.Model
 }
 
 /// List all models via the API
-Method GetModel() As %ListOfObjects(ELEMENTTYPE="St.OpenAi.Model.Model")
+Method GetModels() As %ListOfObjects(ELEMENTTYPE="St.OpenAi.Model.Model")
 {
     Quit $$$ERROR($$$GeneralError, "GetModel not implemented by " _ ..%ClassName(1))
 }

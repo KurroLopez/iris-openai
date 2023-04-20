@@ -18,7 +18,14 @@ Property Created As %TimeStamp(%JSONINCLUDE = "none");
 /// Override method to return UnixTime in Timestamp format
 Method CreatedGet() As %TimeStamp
 {
-    if (..CreatedUnixTime > 0) return $ZDATETIMEH(..CreatedUnixTime,-2)
+    if (..CreatedUnixTime > 0) 
+    {
+        return $ZDATETIMEH(..CreatedUnixTime,-2) 
+    }
+    else 
+    {
+        return $ZDATETIMEH(0,-2)
+    }
 }
 
 /// The time when the model was created in unix epoch format
