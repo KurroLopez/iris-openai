@@ -1,9 +1,9 @@
 Class tests.CodeTest
 {
 
-Parameter ApiKey = "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";
+Parameter ApiKey = "InsertHereYourApiKey";
 
-Parameter Organization = "org-UAoCnffwAYPX1Y7Ribk84pd1";
+Parameter Organization = "InsertHereYourOrganisation";
 
 /// Test
 ClassMethod ValidateAuth() As %Status
