@@ -18,7 +18,7 @@ Property Endpoint As %String;
 Method EndpointSet(value As %String) As %Status
 {
  
-    // Do nothing. This propertu is intialized and readonly
+    // Do nothing. This property is intialized and readonly
 }
 
 Method EndpointGet() As %String [ Abstract ]
@@ -88,16 +88,18 @@ Method GetRequest() As %Net.HttpRequest
 }
 
 /// Call service and retrive the content as string
-Method HttpGetContent(pUrl = "") As %String
+Method HttpGetContent(pUrl = "", content As %String) As %Status
 {
     #dim pResponse As %Net.HttpResponse
     set tSC = ..HttpRequestRaw(pUrl,,,,.pResponse)
+    $$$ThrowOnError(tSC)
+
     set content = ""
     while (pResponse.Data.AtEnd = 0) 
     { 
         set content = content_pResponse.Data.Read() 
     }
-    return content
+    return $$$OK
 }
 
 /// Call to the service and return the response object
@@ -142,25 +144,25 @@ Method HttpRequestRaw(pUrl As %String = "", pVerb As %String = "", pParameters =
         }
         if (statusCode = $$$HttpStatusUnauthorized)
         {
-            $$$ThrowOnError($System.Status.Error(5001,"OpenAI rejected your authorization, most likely due to an invalid API Key."))
+            $$$ThrowOnError($$$ERROR($$$GeneralError,"OpenAI rejected your authorization, most likely due to an invalid API Key."))
         }
         if (statusCode = $$$HttpStatusInternalServerError)
         {
-            $$$ThrowOnError($System.Status.Error(5001,"OpenAI had an internal server error, which can happen occasionally.  Please retry your request."))
+            $$$ThrowOnError($$$ERROR($$$GeneralError,"OpenAI had an internal server error, which can happen occasionally.  Please retry your request."))
         }
     }
     catch ex
     {
         set status = ex.AsStatus()
         set msgError = $System.Status.GetOneStatusText(status,1)
-        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+        $$$ThrowOnError($$$ERROR($$$GeneralError,"Internal error: "_msgError))
     }
     
     quit $$$OK
 }
 
 /// Sends an HTTP Request and does initial parsing
-Method HttpRequest(pUrl = "", pVerb = "", pParameters = "", pResponse As St.OpenAi.Base.ApiResult)
+Method HttpRequest(pUrl = "", pVerb = "", pParameters = "", pResponse As St.OpenAi.Base.ApiResult) As %Status
 {
     set res = $$$OK
 

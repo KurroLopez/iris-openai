@@ -1,16 +1,15 @@
 Class tests.CodeTest
 {
 
-Parameter ApiKey = "InsertHereYourApiKey";
+Parameter ApiKey = "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";
 
-Parameter Organization = "InsertHereYourOrganisation";
+Parameter Organization = "org-UAoCnffwAYPX1Y7Ribk84pd1";
 
 /// Test
 ClassMethod ValidateAuth() As %Status
 {
     set auth = ##class(St.OpenAi.ApiAuthentication).%New(..#ApiKey, ..#Organization)
-    set result = auth.ValidateApiKey()
-    quit $$$OK
+    write auth.ValidateApiKey()
 }
 
 }

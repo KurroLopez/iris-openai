@@ -14,18 +14,25 @@ Method %OnNew(apiKey As %String = "", organizationId As %String = "", Output val
 }
 
 /// Validate the API Key
-Method ValidateApiKey() As %Boolean
+Method ValidateApiKey() As %Status
 {
-    if ..ApiKey = ""
-    {
-        return $$$NO
+    #dim ex As %Exception.AbstractException
+    set status = $$$OK
+    
+    try {
+        if ..ApiKey = "" $$$ThrowOnError($$$ERROR($$$GeneralError, "ApiKey is mandatory"))
+
+        set auth = ..%ConstructClone()
+        set api=##class(St.OpenAi.OpenAiAPI).%New(auth)
+
+        $$$ThrowOnError(api.Models.GetModels(.models))
+        
+        if ((models = "") || (models.Count() = 0)) $$$ThrowOnError($$$ERROR($$$GeneralError, "No models have been retrieved"))
     }
-    set auth = ..%ConstructClone()
-    set api=##class(St.OpenAi.OpenAiAPI).%New(auth)
-
-    set result = api.Models.GetModels()
-
-    return (result.Count() > 0)
+    Catch ex {
+        set status = ex.AsStatus()
+    }
+    return status
 }
 
 }
