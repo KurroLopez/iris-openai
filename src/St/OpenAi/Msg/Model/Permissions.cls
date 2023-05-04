@@ -1,4 +1,4 @@
-Class St.OpenAi.Model.Permissions Extends (%RegisteredObject, %JSON.Adaptor)
+Class St.OpenAi.Msg.Model.Permissions Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// Permission Id (No to be confused with ModeId)
@@ -8,23 +8,7 @@ Property Id As %String(%JSONFIELDNAME = "id", MAXLEN = "");
 Property Object As %String(%JSONFIELDNAME = "object", MAXLEN = "");
 
 /// Unix timestamp for creation date/time
-Property CreatedUnixTime As %Integer(%JSONFIELDNAME = "created");
-
-/// The time when the permission was created
-Property Created As %TimeStamp(%JSONINCLUDE = "none");
-
-/// Override method to return UnixTime in Timestamp format
-Method CreatedGet() As %TimeStamp
-{
-    if (..CreatedUnixTime > 0) 
-    {
-        return $ZDATETIMEH(..CreatedUnixTime,-2) 
-    }
-    else 
-    {
-        return $ZDATETIMEH(0,-2)
-    }
-}
+Property Created As %Integer(%JSONFIELDNAME = "created");
 
 /// Can the model be created?
 Property AllowCreateEngine As %Boolean(%JSONFIELDNAME = "allow_create_engine");
@@ -55,5 +39,50 @@ Property Group As %String(%JSONFIELDNAME = "group", MAXLEN = "");
 
 ///  Does the model blocking?
 Property IsBlocking As %Boolean(%JSONFIELDNAME = "is_blocking");
+
+Storage Default
+{
+<Data name="PermissionsState">
+<Value name="1">
+<Value>Id</Value>
+</Value>
+<Value name="2">
+<Value>Object</Value>
+</Value>
+<Value name="3">
+<Value>Created</Value>
+</Value>
+<Value name="4">
+<Value>AllowCreateEngine</Value>
+</Value>
+<Value name="5">
+<Value>AllowSampling</Value>
+</Value>
+<Value name="6">
+<Value>AllowLogProbs</Value>
+</Value>
+<Value name="7">
+<Value>AllowSearchIndices</Value>
+</Value>
+<Value name="8">
+<Value>AllowView</Value>
+</Value>
+<Value name="9">
+<Value>AllowFineTuning</Value>
+</Value>
+<Value name="10">
+<Value>Organization</Value>
+</Value>
+<Value name="11">
+<Value>Group</Value>
+</Value>
+<Value name="12">
+<Value>IsBlocking</Value>
+</Value>
+</Data>
+<State>PermissionsState</State>
+<StreamLocation>^St.OpenAi.MsgCC6C.PermissionsS</StreamLocation>
+<Type>%Storage.Serial</Type>
+}
 
 }

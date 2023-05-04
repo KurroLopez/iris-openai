@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1 (Build 215U)" ts="2023-05-03 19:47:01">
+<Class name="Demo.Install">
+<Super>St.Tools.Deploy</Super>
+<TimeChanged>66597,71189.954196</TimeChanged>
+<TimeCreated>66597,71189.954196</TimeCreated>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Class with initial instructions
+
+]]></Content>
+</UDLText>
+
+<Method name="Deploy">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+        set namespace = "Demo.Production"
+
+        // Add main paramateres
+        do ..AddItem(namespace, "St.OpenAi.BO.Api.Models","St.OpenAi.BO.Api.Models")
+
+        // Add default parameters
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Models","ApiKey","<INSERT_YOUR_APIKEY>")
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Models","Organization","<INSERT_YOUR_ORGANIZATION>")
+]]></Implementation>
+</Method>
+</Class>
+</Export>
