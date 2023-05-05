@@ -9,6 +9,8 @@ ClassMethod Deploy()
 
         // Add main paramateres
         do ..AddItem(production, "St.OpenAi.BO.Api.Connect","St.OpenAi.BO.Api.Connect")
+        do ..AddItem(production, "St.OpenAi.BP.Chat","St.OpenAi.BP.Chat")
+        do ..AddItem(production, "St.OpenAi.BP.Image","St.OpenAi.BP.Image")
 
         // Add default parameters
         do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","ApiKey","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")

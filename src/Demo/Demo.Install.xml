@@ -15,14 +15,22 @@
 <Method name="Deploy">
 <ClassMethod>1</ClassMethod>
 <Implementation><![CDATA[
-        set namespace = "Demo.Production"
+        set production = "Demo.Production"
 
         // Add main paramateres
-        do ..AddItem(namespace, "St.OpenAi.BO.Api.Models","St.OpenAi.BO.Api.Models")
+        do ..AddItem(production, "St.OpenAi.BO.Api.Connect","St.OpenAi.BO.Api.Connect")
+        do ..AddItem(production, "St.OpenAi.BP.Chat","St.OpenAi.BP.Chat")
+        do ..AddItem(production, "St.OpenAi.BP.Image","St.OpenAi.BP.Image")
 
         // Add default parameters
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Models","ApiKey","<INSERT_YOUR_APIKEY>")
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Models","Organization","<INSERT_YOUR_ORGANIZATION>")
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","ApiKey","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")
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","Organization","org-UAoCnffwAYPX1Y7Ribk84pd1")
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","SSLConfig","OpenAiSSL")
+
+        // Add SSL Certificate
+        New $Namespace
+        Set $Namespace = "%SYS"
+        if ('##class(Security.SSLConfigs).Exists("OpenAiSSL")) set st = ##class(Security.SSLConfigs).Create("OpenAiSSL")
 ]]></Implementation>
 </Method>
 </Class>

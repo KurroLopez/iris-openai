@@ -1,4 +1,4 @@
-Include St.OpenAi.ModelNames
+Include St.OpenAi.OpenAi
 
 Class St.OpenAi.Msg.Model.Model Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {

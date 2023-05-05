@@ -5,7 +5,7 @@ Class St.OpenAi.BP.Chat Extends Ens.BusinessProcessBPL
 /// BPL Definition
 XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
-<process language='objectscript' request='Ens.StringRequest' response='St.OpenAi.Msg.Chat.ChatResponse' includes='St.OpenAi.ModelNames, St.OpenAi.ChatMessageRole' height='2000' width='2000' >
+<process language='objectscript' request='Ens.StringRequest' response='St.OpenAi.Msg.Chat.ChatResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
 <context>
 <property name='MsgChat' type='St.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
 </context>

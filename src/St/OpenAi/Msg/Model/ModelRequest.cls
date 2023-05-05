@@ -1,4 +1,4 @@
-Class St.OpenAi.Msg.Api.ModelRequest Extends Ens.Request
+Class St.OpenAi.Msg.Model.ModelRequest Extends Ens.Request
 {
 
 /// Model Id

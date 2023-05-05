@@ -1,4 +1,4 @@
-Class St.OpenAi.Msg.Api.ListModelResponse Extends St.OpenAi.Msg.Api.Response
+Class St.OpenAi.Msg.Model.ListModelResponse Extends St.OpenAi.Msg.Api.Response
 {
 
 /// List of models

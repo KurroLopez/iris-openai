@@ -105,9 +105,9 @@ Method initializeRest(Output pRequest As %Net.HttpRequest) As %Status
     set pRequest=##class(%Net.HttpRequest).%New()
     set pRequest.Server = ..#OpenAiServer
     set pRequest.UserAgent = ..#UserAgent
-    set pRequest.ContentType = "application/json"
+    set pRequest.ContentType = "application/json; charset=utf-8"
 
-    do pRequest.SetHeader("Accept-Charset", "utf-8")
+    #; do pRequest.SetHeader("Accept-Charset", "utf-8")
     do pRequest.SetHeader("Authorization", $$$FormatText("Bearer %1",..ApiKey))
     do pRequest.SetHeader("api-key", ..ApiKey)
     if (..Organization '= "") do pRequest.SetHeader("OpenAI-Organization", ..Organization)
