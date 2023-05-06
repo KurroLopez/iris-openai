@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-05-06 12:14:15">
+<Class name="Demo.BP.Chat">
+<Description>
+</Description>
+<Super>Ens.BusinessProcessBPL</Super>
+<TimeChanged>66599,55943.840917</TimeChanged>
+<TimeCreated>66599,55943.840917</TimeCreated>
+
+<XData name="BPL">
+<Description>
+BPL Definition</Description>
+<XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
+<Data><![CDATA[
+<process language='objectscript' request='Ens.StringRequest' response='St.OpenAi.Msg.Chat.ChatResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<context>
+<property name='MsgChat' type='St.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
+</context>
+<sequence xend='200' yend='550' >
+<code name='Prepare Msg' xpos='200' ypos='250' >
+<![CDATA[ set context.MsgChat = ##class(St.OpenAi.Msg.Chat.ChatRequest).%New()
+ set context.MsgChat.Model = $$$ChatGPTTurbo
+ set context.MsgChat.Temperature = 0.1
+ set context.MsgChat.MaxTokens = 5
+ set message = ##class(St.OpenAi.Msg.Chat.ChatMessage).%New()
+ set message.Role = $$$UserRole
+ set message.Content = request.StringValue
+ do context.MsgChat.Messages.Insert(message)]]]]><![CDATA[>
+</code>
+<call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='St.OpenAi.Msg.Chat.ChatRequest' >
+<assign property="callrequest" value="context.MsgChat" action="set" />
+</request>
+<response type='St.OpenAi.Msg.Chat.ChatResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
+</call>
+<sync name='Wait Call APi' calls='Call Api' type='all' xpos='200' ypos='450' />
+</sequence>
+</process>
+]]></Data>
+</XData>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+</Storage>
+</Class>
+
+
+<Class name="Demo.BP.Image">
+<Description>
+</Description>
+<Super>Ens.BusinessProcessBPL</Super>
+<TimeChanged>66599,67661.391902</TimeChanged>
+<TimeCreated>66599,55948.710896</TimeCreated>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+</Storage>
+
+<XData name="BPL">
+<Description>
+BPL Definition</Description>
+<XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
+<Data><![CDATA[
+<process language='objectscript' request='Demo.Msg.ImageRequest' response='Demo.Msg.ImageResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<context>
+<property name='imagesRequest' type='St.OpenAi.Msg.Images.ImagesRequest' instantiate='0' />
+<property name='imagesResponse' type='St.OpenAi.Msg.Images.ImagesResponse' instantiate='0' />
+</context>
+<sequence xend='200' yend='650' >
+<transform name='Image to OpenAi image' class='Demo.DT.ImageToOpenAiImage' source='request' target='context.imagesRequest' xpos='200' ypos='250' />
+<call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='St.OpenAi.Msg.Images.ImagesRequest' >
+<assign property="callrequest" value="context.imagesRequest" action="set" />
+</request>
+<response type='St.OpenAi.Msg.Images.ImagesResponse' >
+<assign property="context.imagesResponse" value="callresponse" action="set" />
+</response>
+</call>
+<sync name='Wait Call APi' calls='Call Api' type='all' xpos='200' ypos='450' />
+<transform name='OpenAi image to Image' class='Demo.DT.OpenAiImageToImage' source='context.imagesResponse' target='response' xpos='200' ypos='550' />
+</sequence>
+</process>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Demo.BP.OpenAi">
+<Description>
+</Description>
+<Super>Ens.BusinessProcessBPL</Super>
+<TimeChanged>66600,41751.139714</TimeChanged>
+<TimeCreated>66599,57112.87905</TimeCreated>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+</Storage>
+
+<XData name="BPL">
+<Description>
+BPL Definition</Description>
+<XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
+<Data><![CDATA[
+<process language='objectscript' request='Ens.Request' response='Ens.Response' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<sequence xend='200' yend='700' >
+<switch name='CheckRequest' xpos='200' ypos='250' xend='200' yend='500' >
+<case condition='$classname(request)="Demo.Msg.ImageRequest"' name='Demo.Msg.ImageResponse' >
+<call name='Create new image' target='Demo.BP.Image' async='1' xpos='200' ypos='400' >
+<request type='Demo.Msg.ImageRequest' >
+<assign property="callrequest" value="request" action="set" />
+</request>
+<response type='Demo.Msg.ImageResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
+</call>
+</case>
+<default>
+<empty name='Do nothing' xpos='521' ypos='407' />
+</default>
+</switch>
+<sync name='Wait calls' calls='Create new image' type='all' xpos='200' ypos='600' />
+</sequence>
+</process>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Demo.BS.API.OpenAi">
+<Super>%CSP.REST,Ens.BusinessService</Super>
+<TimeChanged>66600,43111.396811</TimeChanged>
+<TimeCreated>66599,56436.719129</TimeCreated>
+
+<XData name="UrlMap">
+<XMLNamespace>http://www.intersystems.com/urlmap</XMLNamespace>
+<Data><![CDATA[
+<Routes>
+	<Route Url="(?i)/image/create" Method="POST" Call="CreateImage"/>
+    <Route Url="(?i)/image/edit" Method="POST" Call="EditImage"/>
+    <Route Url="(?i)/image/variation" Method="POST" Call="VariationImage"/>
+</Routes>
+]]></Data>
+</XData>
+
+<Parameter name="BPOPENAI">
+<Default>Demo.BP.OpenAi</Default>
+</Parameter>
+
+<Parameter name="CLASSBS">
+<Default>Demo.BS.API.OpenAi</Default>
+</Parameter>
+
+<Method name="CreateImage">
+<Description>
+Create an image</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    quit ..RetrieveImage("CREATE")
+]]></Implementation>
+</Method>
+
+<Method name="EditImage">
+<Description>
+Edit an image</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    quit ..RetrieveImage("EDIT")
+]]></Implementation>
+</Method>
+
+<Method name="VariationImage">
+<Description>
+Variation of an image</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    quit ..RetrieveImage("VARIATION")
+]]></Implementation>
+</Method>
+
+<Method name="RetrieveImage">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>operation:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
+        set pRequest = ##class(Demo.Msg.ImageRequest).%New()
+        do pRequest.%JSONImport(dynamic)
+        $$$TRACE("Dynamic created")
+        set pRequest.Operation = operation
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        do pResponse.%JSONExportToStream(.tStream)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnProcessInput">
+<FormalSpec><![CDATA[pInput:%RegisteredObject,*pOutput:%RegisteredObject,&pHint:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	//1: pHint — The configuration name of the business process or business operation to which the request is sent.
+	//2: pInput — A request message. See Defining Ensemble Messages.
+	//3: pOutput — (By reference) A response message. This object receives the data returned by the response.
+	//4: pTimeout — (Optional) The number of seconds to wait for a response. The default is –1 (wait forever).
+
+	Quit ..SendRequestSync(pHint, pInput, .pOutput)
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Demo.DT.ImageToOpenAiImage">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66599,65823.698508</TimeChanged>
+<TimeCreated>66599,65409.240022</TimeCreated>
+<DependsOn>Demo.Msg.ImageRequest,St.OpenAi.Msg.Images.ImagesRequest</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='Demo.Msg.ImageRequest' targetClass='St.OpenAi.Msg.Images.ImagesRequest' create='new' language='objectscript' >
+<assign value='source.Prompt' property='target.Prompt' action='set' />
+<assign value='source.NumImage' property='target.NumOfImages' action='set' />
+<assign value='$CASE(source.Size,"S":"256x256","M":"512x512","L":"1024x1024",:"1024x1024")' property='target.Size' action='set' />
+<assign value='$CASE(source.Base64,1:"b64_json",:"url")' property='target.ResponseFormat' action='set' />
+<assign value='$CASE(source.Operation,"CREATE":"generations", "EDIT":"edits", "VARIATION":"variations",:"generations") ' property='target.Operation' action='set' />
+<assign value='source.Image' property='target.Image' action='set' />
+<assign value='source.Mask' property='target.Mask' action='set' />
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Demo.DT.OpenAiImageToImage">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66600,43299.042615</TimeChanged>
+<TimeCreated>66599,67557.275809</TimeCreated>
+<DependsOn>St.OpenAi.Msg.Images.ImagesResponse,Demo.Msg.ImageResponse</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='St.OpenAi.Msg.Images.ImagesResponse' targetClass='Demo.Msg.ImageResponse' create='new' language='objectscript' >
+<foreach property='source.Data()' key='k1' >
+<if condition='source.Data.(k1).Url = ""' >
+<true>
+<assign value='source.Data.(k1).Base64' property='target.Data.(k1)' action='set' />
+</true>
+<false>
+<assign value='source.Data.(k1).Url' property='target.Data.(k1)' action='set' />
+</false>
+</if>
+</foreach>
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Demo.Msg.ImageRequest">
+<Super>Ens.Request,%JSON.Adaptor</Super>
+<TimeChanged>66599,68183.742105</TimeChanged>
+<TimeCreated>66599,57818.908444</TimeCreated>
+
+<Property name="Prompt">
+<Description>
+Prompt of the images to create</Description>
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="prompt"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Property name="NumImage">
+<Description>
+Number of images to retrieve.</Description>
+<Type>%Integer</Type>
+<Parameter name="%JSONFIELDNAME" value="number_images"/>
+</Property>
+
+<Property name="Size">
+<Description>
+Size of the image, S-Small, M-Medium, L-Large</Description>
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="size"/>
+<Parameter name="MAXLEN" value="1"/>
+</Property>
+
+<Property name="Base64">
+<Description>
+Retrieve the images in Base64, by default will be retrieved in url</Description>
+<Type>%Boolean</Type>
+<Parameter name="%JSONFIELDNAME" value="base64"/>
+</Property>
+
+<Property name="Operation">
+<Description>
+Operation</Description>
+<Type>%String</Type>
+<Parameter name="%JSONINCLUDE" value="none"/>
+</Property>
+
+<Property name="Image">
+<Description>
+The image to edit. Must be a valid PNG file, less than 4MB, and square. 
+If mask is not provided, image must have transparency, which will be used as the mask.</Description>
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="image"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Property name="Mask">
+<Description>
+An additional image whose fully transparent areas (e.g. where alpha is zero) 
+indicate where image should be edited. 
+Must be a valid PNG file, less than 4MB, and have the same dimensions as image</Description>
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="mask"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>ImageRequestDefaultData</DefaultData>
+<Data name="ImageRequestDefaultData">
+<Subscript>"ImageRequest"</Subscript>
+<Value name="1">
+<Value>Prompt</Value>
+</Value>
+<Value name="2">
+<Value>NumImage</Value>
+</Value>
+<Value name="3">
+<Value>Size</Value>
+</Value>
+<Value name="4">
+<Value>Base64</Value>
+</Value>
+<Value name="5">
+<Value>Operation</Value>
+</Value>
+<Value name="6">
+<Value>Image</Value>
+</Value>
+<Value name="7">
+<Value>Mask</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="Demo.Msg.ImageResponse">
+<Super>Ens.Response,%JSON.Adaptor</Super>
+<TimeChanged>66599,58002.324579</TimeChanged>
+<TimeCreated>66599,57898.969791</TimeCreated>
+
+<Property name="Data">
+<Description>
+List of images required</Description>
+<Type>%String</Type>
+<Collection>list</Collection>
+<Parameter name="%JSONFIELDNAME" value="data"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>ImageResponseDefaultData</DefaultData>
+<Data name="ImageResponseDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"ImageResponse"</Subscript>
+<Value name="1">
+<Value>Data</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

@@ -16,7 +16,7 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 /// Image size
 #Define ImageSmall "256x256"
 #Define ImageMedium "512x512"
-#Define ImageBig "1024x1024"
+#Define ImageLarge "1024x1024"
 
 /// Image operation
 #Define ImageGenerations "generations"

@@ -6,11 +6,12 @@ Class Demo.Install Extends St.Tools.Deploy
 ClassMethod Deploy()
 {
         set production = "Demo.Production"
-
+        set currentNamespace = $Namespace
         // Add main paramateres
         do ..AddItem(production, "St.OpenAi.BO.Api.Connect","St.OpenAi.BO.Api.Connect")
-        do ..AddItem(production, "St.OpenAi.BP.Chat","St.OpenAi.BP.Chat")
-        do ..AddItem(production, "St.OpenAi.BP.Image","St.OpenAi.BP.Image")
+        do ..AddItem(production, "Demo.BP.Chat","Demo.BP.Chat")
+        do ..AddItem(production, "Demo.BP.Image","Demo.BP.Image")
+        do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 
         // Add default parameters
         do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","ApiKey","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")
@@ -21,6 +22,9 @@ ClassMethod Deploy()
         New $Namespace
         Set $Namespace = "%SYS"
         if ('##class(Security.SSLConfigs).Exists("OpenAiSSL")) set st = ##class(Security.SSLConfigs).Create("OpenAiSSL")
+
+        // Add API Services
+        do ..RegisterWebApplication(currentNamespace, "/openai/api","Demo.BS.API.OpenAi")
 }
 
 }

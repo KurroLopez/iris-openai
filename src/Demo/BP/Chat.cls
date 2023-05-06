@@ -1,5 +1,5 @@
 /// 
-Class St.OpenAi.BP.Chat Extends Ens.BusinessProcessBPL
+Class Demo.BP.Chat Extends Ens.BusinessProcessBPL
 {
 
 /// BPL Definition
