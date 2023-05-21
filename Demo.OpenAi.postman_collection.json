@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "c78dc81b-fdda-4a62-a089-9880db53bb7e",
+		"name": "Demo.OpenAi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1556839"
+	},
+	"item": [
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Create new image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"prompt\": \"two cats with hat reading a comic\",\r\n    \"size\": \"M\",\r\n    \"base64\": false,\r\n    \"number_images\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:42773/openai/api/image/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "42773",
+							"path": [
+								"openai",
+								"api",
+								"image",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create new image",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"prompt\": \"two cats with hat reading a comic\",\r\n    \"size\": \"M\",\r\n    \"base64\": false,\r\n    \"number_images\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:42773/openai/api/image/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "42773",
+									"path": [
+										"openai",
+										"api",
+										"image",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 07 May 2023 18:07:54 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache"
+								},
+								{
+									"key": "CACHE-CONTROL",
+									"value": "no-cache"
+								},
+								{
+									"key": "EXPIRES",
+									"value": "Thu, 29 Oct 1998 17:04:19 GMT"
+								},
+								{
+									"key": "PRAGMA",
+									"value": "no-cache"
+								},
+								{
+									"key": "CONTENT-LENGTH",
+									"value": "485"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=120"
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        \"https://oaidalleapiprodscus.blob.core.windows.net/private/org-UAoCnffwAYPX1Y7Ribk84pd1/user-a0BFXmwru24T45Y1WyoIFzYb/img-1zVFTc223AjDBKgJS7AoFLjV.png?st=2023-05-07T17%3A07%3A59Z&se=2023-05-07T19%3A07%3A59Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-05-07T16%3A20%3A09Z&ske=2023-05-08T16%3A20%3A09Z&sks=b&skv=2021-08-06&sig=wfmMMosca/geq4n9MwJUVXKkhDGQ7Ee8T7CAND3OYpg%3D\"\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Chat prompt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"prompt\": \"How is the sky colour?\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:42773/openai/api/chat",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "42773",
+							"path": [
+								"openai",
+								"api",
+								"chat"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Models",
+			"item": [
+				{
+					"name": "List of models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:42773/openai/api/models",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "42773",
+							"path": [
+								"openai",
+								"api",
+								"models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Info model",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:42773/openai/api/models/gpt-3.5-turbo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "42773",
+							"path": [
+								"openai",
+								"api",
+								"models",
+								"gpt-3.5-turbo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

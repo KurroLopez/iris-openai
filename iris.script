@@ -1,16 +1,13 @@
-    ;do $System.OBJ.LoadDir("/opt/irisbuild/src","ck",,1)
-
-    ;disabling password expire for development purposes
-    zn "%SYS"
-    Do ##class(Security.Users).UnExpireUserPasswords("*")
-
-    ; enabling callin for Embedded Python
-    do ##class(Security.Services).Get("%Service_CallIn",.prop)
-    set prop("Enabled")=1
-    set prop("AutheEnabled")=48
-    do ##class(Security.Services).Modify("%Service_CallIn",.prop)
-
-    ; importing the source code of the repository as ZPM module
-    zn "USER"
-    zpm "load /home/irisowner/irisbuild/ -v":1:1
-    halt
+zn "%SYS"
+Do ##class(Security.Users).UnExpireUserPasswords("*")
+set prop("DeepSeeEnabled")=1
+do ##class(Security.Applications).Modify("/csp/user",.prop)
+zn "USER"
+zpm "load /opt/irisbuild/ -v":1
+zpm "install iris-deploy-tools -v" 
+do $system.OBJ.LoadDir("/opt/irisbuild/src/Demo","ck")
+do ##class(Demo.Install).Deploy()
+hang 2
+do ##class(Ens.Director).SetAutoStart("Demo.Production")
+hang 2
+halt
