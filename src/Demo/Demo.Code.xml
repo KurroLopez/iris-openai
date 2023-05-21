@@ -1,49 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-05-06 12:14:15">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-05-21 19:22:43">
 <Class name="Demo.BP.Chat">
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66599,55943.840917</TimeChanged>
+<TimeChanged>66615,68360.228735</TimeChanged>
 <TimeCreated>66599,55943.840917</TimeCreated>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+</Storage>
 
 <XData name="BPL">
 <Description>
 BPL Definition</Description>
 <XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
 <Data><![CDATA[
-<process language='objectscript' request='Ens.StringRequest' response='St.OpenAi.Msg.Chat.ChatResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<process language='objectscript' request='Demo.Msg.ChatRequest' response='Demo.Msg.ChatResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
 <context>
-<property name='MsgChat' type='St.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
+<property name='MsgChatRequest' type='St.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
+<property name='MsgChatResponse' type='St.OpenAi.Msg.Chat.ChatResponse' instantiate='0' />
 </context>
-<sequence xend='200' yend='550' >
+<sequence xend='200' yend='650' >
 <code name='Prepare Msg' xpos='200' ypos='250' >
-<![CDATA[ set context.MsgChat = ##class(St.OpenAi.Msg.Chat.ChatRequest).%New()
- set context.MsgChat.Model = $$$ChatGPTTurbo
- set context.MsgChat.Temperature = 0.1
- set context.MsgChat.MaxTokens = 5
+<![CDATA[ set context.MsgChatRequest = ##class(St.OpenAi.Msg.Chat.ChatRequest).%New()
+ set context.MsgChatRequest.Model = $$$ChatGPTTurbo
+ set context.MsgChatRequest.Temperature = 0.1
+ set context.MsgChatRequest.MaxTokens = 100
+ set context.MsgChatRequest.CompiledStop = "none"
  set message = ##class(St.OpenAi.Msg.Chat.ChatMessage).%New()
  set message.Role = $$$UserRole
- set message.Content = request.StringValue
- do context.MsgChat.Messages.Insert(message)]]]]><![CDATA[>
+ set message.Content = request.Prompt
+ do context.MsgChatRequest.Messages.Insert(message)]]]]><![CDATA[>
 </code>
 <call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
 <request type='St.OpenAi.Msg.Chat.ChatRequest' >
-<assign property="callrequest" value="context.MsgChat" action="set" />
+<assign property="callrequest" value="context.MsgChatRequest" action="set" />
 </request>
 <response type='St.OpenAi.Msg.Chat.ChatResponse' >
-<assign property="response" value="callresponse" action="set" />
+<assign property="context.MsgChatResponse" value="callresponse" action="set" />
 </response>
 </call>
 <sync name='Wait Call APi' calls='Call Api' type='all' xpos='200' ypos='450' />
+<transform class='Demo.DT.OpenAiChatToChat' source='context.MsgChatResponse' target='response' xpos='200' ypos='550' />
 </sequence>
 </process>
 ]]></Data>
 </XData>
-
-<Storage name="Default">
-<Type>%Storage.Persistent</Type>
-</Storage>
 </Class>
 
 
@@ -91,7 +94,7 @@ BPL Definition</Description>
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66600,41751.139714</TimeChanged>
+<TimeChanged>66615,69316.418618</TimeChanged>
 <TimeCreated>66599,57112.87905</TimeCreated>
 
 <Storage name="Default">
@@ -116,11 +119,39 @@ BPL Definition</Description>
 </response>
 </call>
 </case>
+<case condition='$classname(request)="St.OpenAi.Msg.Model.ModelRequest"' name='St.OpenAi.Msg.Model.ModelRequest' >
+<call name='Retrieve models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='470' ypos='400' >
+<request type='St.OpenAi.Msg.Model.ModelRequest' >
+<assign property="callrequest" value="request" action="set" />
+</request>
+<response type='St.OpenAi.Msg.Model.ModelResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
+</call>
+</case>
+<case condition='$classname(request)="Demo.Msg.ChatRequest"' name='Demo.Msg.ChatRequest' >
+<call name='Create a chat' target='Demo.BP.Chat' async='1' xpos='740' ypos='400' >
+<request type='Ens.StringRequest' >
+<assign property="callrequest.StringValue" value="request.Prompt" action="set" />
+</request>
+<response type='Ens.Response' />
+</call>
+</case>
+<case condition='$classname(request)="St.OpenAi.Msg.Model.ListModelRequest"' name='St.OpenAi.Msg.Model.ListModelRequest' >
+<call name='Retrieve all models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='1279' ypos='403' >
+<request type='St.OpenAi.Msg.Model.ListModelRequest' >
+<assign property="callrequest" value="request" action="set" />
+</request>
+<response type='St.OpenAi.Msg.Model.ListModelResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
+</call>
+</case>
 <default>
-<empty name='Do nothing' xpos='521' ypos='407' />
+<empty name='Do nothing' xpos='1010' ypos='400' />
 </default>
 </switch>
-<sync name='Wait calls' calls='Create new image' type='all' xpos='200' ypos='600' />
+<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models' type='all' xpos='200' ypos='600' />
 </sequence>
 </process>
 ]]></Data>
@@ -130,7 +161,7 @@ BPL Definition</Description>
 
 <Class name="Demo.BS.API.OpenAi">
 <Super>%CSP.REST,Ens.BusinessService</Super>
-<TimeChanged>66600,43111.396811</TimeChanged>
+<TimeChanged>66615,69081.895827</TimeChanged>
 <TimeCreated>66599,56436.719129</TimeCreated>
 
 <XData name="UrlMap">
@@ -140,6 +171,9 @@ BPL Definition</Description>
 	<Route Url="(?i)/image/create" Method="POST" Call="CreateImage"/>
     <Route Url="(?i)/image/edit" Method="POST" Call="EditImage"/>
     <Route Url="(?i)/image/variation" Method="POST" Call="VariationImage"/>
+    <Route Url="(?i)/models/:modelname" Method="GET" Call="Models"/>
+    <Route Url="(?i)/models" Method="GET" Call="AllModels"/>
+    <Route Url="(?i)/chat" Method="POST" Call="Chat"/>
 </Routes>
 ]]></Data>
 </XData>
@@ -223,6 +257,128 @@ Variation of an image</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="Models">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>modelName:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set pRequest = ##class(St.OpenAi.Msg.Model.ModelRequest).%New()
+        set pRequest.Model = modelName
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        do pResponse.%JSONExportToStream(.tStream)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="AllModels">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set pRequest = ##class(St.OpenAi.Msg.Model.ListModelRequest).%New()
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        do pResponse.%JSONExportToStream(.tStream)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Chat">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
+        set pRequest = ##class(Demo.Msg.ChatRequest).%New()
+        do pRequest.%JSONImport(dynamic)
+        $$$TRACE("Dynamic created")
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        do pResponse.%JSONExportToStream(.tStream)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
 <Method name="OnProcessInput">
 <FormalSpec><![CDATA[pInput:%RegisteredObject,*pOutput:%RegisteredObject,&pHint:%String]]></FormalSpec>
 <ReturnType>%Status</ReturnType>
@@ -273,6 +429,35 @@ Variation of an image</Description>
 </Class>
 
 
+<Class name="Demo.DT.OpenAiChatToChat">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66615,67892.66736</TimeChanged>
+<TimeCreated>66615,67712.609801</TimeCreated>
+<DependsOn>St.OpenAi.Msg.Chat.ChatResponse,Demo.Msg.ChatResponse</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='St.OpenAi.Msg.Chat.ChatResponse' targetClass='Demo.Msg.ChatResponse' create='new' language='objectscript' >
+<assign value='source.Choices.(1).Message.Content' property='target.Content' action='set' />
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
 <Class name="Demo.DT.OpenAiImageToImage">
 <Super>Ens.DataTransformDTL</Super>
 <TimeChanged>66600,43299.042615</TimeChanged>
@@ -308,6 +493,56 @@ Variation of an image</Description>
 </transform>
 ]]></Data>
 </XData>
+</Class>
+
+
+<Class name="Demo.Msg.ChatRequest">
+<Super>Ens.Request,%JSON.Adaptor</Super>
+<TimeChanged>66615,66522.056721</TimeChanged>
+<TimeCreated>66615,66521.985417</TimeCreated>
+
+<Property name="Prompt">
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="prompt"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>ChatRequestDefaultData</DefaultData>
+<Data name="ChatRequestDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"ChatRequest"</Subscript>
+<Value name="1">
+<Value>Prompt</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="Demo.Msg.ChatResponse">
+<Super>Ens.Response,%JSON.Adaptor</Super>
+<TimeChanged>66615,67774.945013</TimeChanged>
+<TimeCreated>66615,66923.487111</TimeCreated>
+
+<Property name="Content">
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="content"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>ChatResponseDefaultData</DefaultData>
+<Data name="ChatResponseDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"ChatResponse"</Subscript>
+<Value name="1">
+<Value>Content</Value>
+</Value>
+</Data>
+</Storage>
 </Class>
 
 
