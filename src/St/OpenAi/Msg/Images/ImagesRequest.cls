@@ -19,7 +19,7 @@ Property Image As %String(%JSONFIELDNAME = "image", MAXLEN = "");
 Property Mask As %String(%JSONFIELDNAME = "mask", MAXLEN = "");
 
 /// A text description of the desired image(s). The maximum length is 1000 characters.
-Property Prompt As %String(%JSONFIELDNAME = "prompt", MAXLEN = "") [ Required ];
+Property Prompt As %String(%JSONFIELDNAME = "prompt", MAXLEN = "");
 
 /// How many different choices to request for each prompt.  Defaults to 1.
 Property NumOfImages As %Integer(%JSONFIELDNAME = "n");

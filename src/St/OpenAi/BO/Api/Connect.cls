@@ -94,13 +94,62 @@ Method GetImages(pRequest As St.OpenAi.Msg.Images.ImagesRequest, Output pRespons
     try
     {
         set apiResponse = ##class(St.OpenAi.Msg.Api.CallApi).%New()
-        set path = $CASE(pRequest.Operation,$$$ImageGenerations: ..#PathImageGenerations,$$$ImageEdits: ..#PathImageEdits, $$$ImageVariations: ..#PathImageVariations,:..#PathImageGenerations)
-        set tSC = ..CallApi(path,pRequest,"POST",.apiResponse)
+        if (pRequest.Operation = $$$ImageVariations) set tSC = ..GetVariateImages(pRequest, .apiResponse)
+        if (pRequest.Operation = $$$ImageGenerations) set tSC = ..GetCreateImages(pRequest, .apiResponse)
         $$$ThrowOnError(tSC)
+        
         // All has gone well. Serialize the content into the class
         set pResponse = ##class(St.OpenAi.Msg.Images.ImagesResponse).%New()
         do pResponse.%JSONImport(apiResponse.Content)
         do ..UpdateExtraContent(apiResponse, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+/// Create a new image acording to the prompt given
+Method GetCreateImages(pRequest As St.OpenAi.Msg.Images.ImagesRequest, Output pResponse As St.OpenAi.Msg.Api.CallApi) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathImageGenerations
+        set tSC = ..CallApi(path,pRequest,"POST",.pResponse)
+        $$$ThrowOnError(tSC)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+/// Ask the API to variate an image
+Method GetVariateImages(pRequest As St.OpenAi.Msg.Images.ImagesRequest, Output pResponse As St.OpenAi.Msg.Api.CallApi) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathImageVariations
+        set pContentType = "image/png" // All files mus to be a PNG
+        // Create a randomn name of the parameter image
+        set fileName = $System.Util.CreateGUID()_".png"
+        set id = 0
+        set pListParameters($INCREMENT(id)) = $Listbuild("Image","image",fileName)
+        if pRequest.NumOfImages > 0 set pListParameters($INCREMENT(id)) = $Listbuild("NumOfImages","n","")
+        if pRequest.Size '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Size","size","")
+        if pRequest.ResponseFormat '= "" set pListParameters($INCREMENT(id)) = $Listbuild("ResponseFormat","response_format","")
+        set pListParameters = id
+
+        set tSC = ..CallWebForm(path, pRequest, "POST", .pListParameters, pContentType, .pResponse)
+        $$$ThrowOnError(tSC)
     }
     Catch ex {
         set status = ex.AsStatus()
