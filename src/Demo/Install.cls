@@ -11,6 +11,7 @@ ClassMethod Deploy()
         do ..AddItem(production, "St.OpenAi.BO.Api.Connect","St.OpenAi.BO.Api.Connect")
         do ..AddItem(production, "Demo.BP.Chat","Demo.BP.Chat")
         do ..AddItem(production, "Demo.BP.Image","Demo.BP.Image")
+        do ..AddItem(production, "Demo.BP.OpenAi","Demo.BP.OpenAi")
         do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 
         // Add default parameters
