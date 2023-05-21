@@ -35,14 +35,16 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </case>
 <case condition='$classname(request)="Demo.Msg.ChatRequest"' name='Demo.Msg.ChatRequest' >
 <call name='Create a chat' target='Demo.BP.Chat' async='1' xpos='740' ypos='400' >
-<request type='Ens.StringRequest' >
-<assign property="callrequest.StringValue" value="request.Prompt" action="set" />
+<request type='Demo.Msg.ChatRequest' >
+<assign property="callrequest" value="request" action="set" />
 </request>
-<response type='Ens.Response' />
+<response type='Demo.Msg.ChatResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
 </call>
 </case>
 <case condition='$classname(request)="St.OpenAi.Msg.Model.ListModelRequest"' name='St.OpenAi.Msg.Model.ListModelRequest' >
-<call name='Retrieve all models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='1279' ypos='403' >
+<call name='Retrieve all models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='1010' ypos='400' >
 <request type='St.OpenAi.Msg.Model.ListModelRequest' >
 <assign property="callrequest" value="request" action="set" />
 </request>
@@ -52,7 +54,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </call>
 </case>
 <default>
-<empty name='Do nothing' xpos='1010' ypos='400' />
+<empty name='Do nothing' xpos='1280' ypos='400' />
 </default>
 </switch>
 <sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models' type='all' xpos='200' ypos='600' />

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-05-21 19:22:43">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-05-21 19:39:44">
 <Class name="Demo.BP.Chat">
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66615,68360.228735</TimeChanged>
+<TimeChanged>66615,70396.942103</TimeChanged>
 <TimeCreated>66599,55943.840917</TimeCreated>
 
 <Storage name="Default">
@@ -94,7 +94,7 @@ BPL Definition</Description>
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66615,69316.418618</TimeChanged>
+<TimeChanged>66615,70681.641109</TimeChanged>
 <TimeCreated>66599,57112.87905</TimeCreated>
 
 <Storage name="Default">
@@ -131,14 +131,16 @@ BPL Definition</Description>
 </case>
 <case condition='$classname(request)="Demo.Msg.ChatRequest"' name='Demo.Msg.ChatRequest' >
 <call name='Create a chat' target='Demo.BP.Chat' async='1' xpos='740' ypos='400' >
-<request type='Ens.StringRequest' >
-<assign property="callrequest.StringValue" value="request.Prompt" action="set" />
+<request type='Demo.Msg.ChatRequest' >
+<assign property="callrequest" value="request" action="set" />
 </request>
-<response type='Ens.Response' />
+<response type='Demo.Msg.ChatResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
 </call>
 </case>
 <case condition='$classname(request)="St.OpenAi.Msg.Model.ListModelRequest"' name='St.OpenAi.Msg.Model.ListModelRequest' >
-<call name='Retrieve all models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='1279' ypos='403' >
+<call name='Retrieve all models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='1010' ypos='400' >
 <request type='St.OpenAi.Msg.Model.ListModelRequest' >
 <assign property="callrequest" value="request" action="set" />
 </request>
@@ -148,7 +150,7 @@ BPL Definition</Description>
 </call>
 </case>
 <default>
-<empty name='Do nothing' xpos='1010' ypos='400' />
+<empty name='Do nothing' xpos='1280' ypos='400' />
 </default>
 </switch>
 <sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models' type='all' xpos='200' ypos='600' />
