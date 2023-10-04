@@ -1,12 +1,7 @@
 {
-    // "objectscript.conn" :{
-    //   "active": true,
-    //   "ns": "USER",
-    //   "server": "docker~iris"
-    // }
     "objectscript.conn" :{
       "active": true,
-      "ns": "OPENAI",
-      "server": "local~iris"
+      "ns": "USER",
+      "server": "docker~iris"
     }
 }
