@@ -7,6 +7,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 	<Route Url="(?i)/image/create" Method="POST" Call="CreateImage"/>
     <Route Url="(?i)/image/edit" Method="POST" Call="EditImage"/>
     <Route Url="(?i)/image/variation" Method="POST" Call="VariationImage"/>
+    <Route Url="(?i)/audio/transcription" Method="POST" Call="TranscriptionAudio"/>
+    <Route Url="(?i)/audio/translation" Method="POST" Call="TranslationAudio"/>
     <Route Url="(?i)/models/:modelname" Method="GET" Call="Models"/>
     <Route Url="(?i)/models" Method="GET" Call="AllModels"/>
     <Route Url="(?i)/chat" Method="POST" Call="Chat"/>
@@ -46,6 +48,56 @@ ClassMethod RetrieveImage(operation As %String) As %Status
         $$$TRACE("Init process")
         set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
         set pRequest = ##class(Demo.Msg.ImageRequest).%New()
+        do pRequest.%JSONImport(dynamic)
+        $$$TRACE("Dynamic created")
+        set pRequest.Operation = operation
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        do pResponse.%JSONExportToStream(.tStream)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+}
+
+ClassMethod TranscriptionAudio() As %Status
+{
+    quit ..Audio("TRANSCRIPTION")
+}
+
+ClassMethod TranslationAudio() As %Status
+{
+    quit ..Audio("TRANSLATION")
+}
+
+ClassMethod Audio(operation As %String) As %Status
+{
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
+        set pRequest = ##class(Demo.Msg.AudioRequest).%New()
         do pRequest.%JSONImport(dynamic)
         $$$TRACE("Dynamic created")
         set pRequest.Operation = operation

@@ -1,11 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-05-21 19:39:44">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-10-04 07:09:24">
+<Class name="Demo.BP.Audio">
+<Description>
+</Description>
+<Super>Ens.BusinessProcessBPL</Super>
+<TimeChanged>66738,78040.143273</TimeChanged>
+<TimeCreated>66717,43384.941703</TimeCreated>
+
+<XData name="BPL">
+<Description>
+BPL Definition</Description>
+<XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
+<Data><![CDATA[
+<process language='objectscript' request='Demo.Msg.AudioRequest' response='Demo.Msg.AudioResponse' height='2000' width='2000' >
+<context>
+<property name='audioRequest' type='St.OpenAi.Msg.Audio.AudioRequest' instantiate='0' />
+<property name='audioResponse' type='St.OpenAi.Msg.Audio.AudioRequest' instantiate='0' />
+</context>
+<sequence xend='200' yend='650' >
+<transform name='Audio to OpenAi audio' class='Demo.DT.AudioToOpenAiAudio' source='request' target='context.audioRequest' xpos='200' ypos='250' />
+<call name='Call API' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='St.OpenAi.Msg.Audio.AudioRequest' >
+<assign property="callrequest" value="context.audioRequest" action="set" />
+</request>
+<response type='St.OpenAi.Msg.Audio.AudioResponse' >
+<assign property="context.audioResponse" value="callresponse" action="set" />
+</response>
+</call>
+<sync name='Wait Call APi' calls='Call API' type='all' xpos='200' ypos='450' />
+<transform name='OpenAi audio to Audio' class='Demo.DT.OpenAiIAudioToAudio' source='context.audioResponse' target='response' xpos='200' ypos='550' />
+</sequence>
+</process>
+]]></Data>
+</XData>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+</Storage>
+</Class>
+
+
 <Class name="Demo.BP.Chat">
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66615,70396.942103</TimeChanged>
-<TimeCreated>66599,55943.840917</TimeCreated>
+<TimeChanged>66709,43156.462277</TimeChanged>
+<TimeCreated>66709,43156.462277</TimeCreated>
 
 <Storage name="Default">
 <Type>%Storage.Persistent</Type>
@@ -54,8 +94,8 @@ BPL Definition</Description>
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66599,67661.391902</TimeChanged>
-<TimeCreated>66599,55948.710896</TimeCreated>
+<TimeChanged>66709,43156.562461</TimeChanged>
+<TimeCreated>66709,43156.562461</TimeCreated>
 
 <Storage name="Default">
 <Type>%Storage.Persistent</Type>
@@ -94,8 +134,8 @@ BPL Definition</Description>
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66615,70681.641109</TimeChanged>
-<TimeCreated>66599,57112.87905</TimeCreated>
+<TimeChanged>66750,67666.742838</TimeChanged>
+<TimeCreated>66709,43156.552637</TimeCreated>
 
 <Storage name="Default">
 <Type>%Storage.Persistent</Type>
@@ -106,10 +146,10 @@ BPL Definition</Description>
 BPL Definition</Description>
 <XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
 <Data><![CDATA[
-<process language='objectscript' request='Ens.Request' response='Ens.Response' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<process language='objectscript' request='Ens.Request' response='Ens.Response' includes='St.OpenAi.OpenAi' height='2000' width='2150' >
 <sequence xend='200' yend='700' >
 <switch name='CheckRequest' xpos='200' ypos='250' xend='200' yend='500' >
-<case condition='$classname(request)="Demo.Msg.ImageRequest"' name='Demo.Msg.ImageResponse' >
+<case condition='$classname(request)="Demo.Msg.ImageRequest"' name='Demo.Msg.ImageImageRequest' >
 <call name='Create new image' target='Demo.BP.Image' async='1' xpos='200' ypos='400' >
 <request type='Demo.Msg.ImageRequest' >
 <assign property="callrequest" value="request" action="set" />
@@ -149,11 +189,21 @@ BPL Definition</Description>
 </response>
 </call>
 </case>
+<case condition='$classname(request)="Demo.Msg.AudioRequest"' name='Demo.Msg.AudioRequest' >
+<call name='Audio managment' target='Demo.BP.Audio' async='1' xpos='1280' ypos='400' >
+<request type='Demo.Msg.AudioRequest' >
+<assign property="callrequest" value="request" action="set" />
+</request>
+<response type='Demo.Msg.AudioResponse' >
+<assign property="response" value="callresponse" action="set" />
+</response>
+</call>
+</case>
 <default>
-<empty name='Do nothing' xpos='1280' ypos='400' />
+<empty name='Do nothing' xpos='1550' ypos='400' />
 </default>
 </switch>
-<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models' type='all' xpos='200' ypos='600' />
+<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models,Audio managment' type='all' xpos='200' ypos='600' />
 </sequence>
 </process>
 ]]></Data>
@@ -163,8 +213,8 @@ BPL Definition</Description>
 
 <Class name="Demo.BS.API.OpenAi">
 <Super>%CSP.REST,Ens.BusinessService</Super>
-<TimeChanged>66615,69081.895827</TimeChanged>
-<TimeCreated>66599,56436.719129</TimeCreated>
+<TimeChanged>66742,31539.703024</TimeChanged>
+<TimeCreated>66709,43156.407622</TimeCreated>
 
 <XData name="UrlMap">
 <XMLNamespace>http://www.intersystems.com/urlmap</XMLNamespace>
@@ -173,6 +223,8 @@ BPL Definition</Description>
 	<Route Url="(?i)/image/create" Method="POST" Call="CreateImage"/>
     <Route Url="(?i)/image/edit" Method="POST" Call="EditImage"/>
     <Route Url="(?i)/image/variation" Method="POST" Call="VariationImage"/>
+    <Route Url="(?i)/audio/transcription" Method="POST" Call="TranscriptionAudio"/>
+    <Route Url="(?i)/audio/translation" Method="POST" Call="TranslationAudio"/>
     <Route Url="(?i)/models/:modelname" Method="GET" Call="Models"/>
     <Route Url="(?i)/models" Method="GET" Call="AllModels"/>
     <Route Url="(?i)/chat" Method="POST" Call="Chat"/>
@@ -229,6 +281,64 @@ Variation of an image</Description>
         $$$TRACE("Init process")
         set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
         set pRequest = ##class(Demo.Msg.ImageRequest).%New()
+        do pRequest.%JSONImport(dynamic)
+        $$$TRACE("Dynamic created")
+        set pRequest.Operation = operation
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        do pResponse.%JSONExportToStream(.tStream)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="TranscriptionAudio">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    quit ..Audio("TRANSCRIPTION")
+]]></Implementation>
+</Method>
+
+<Method name="TranslationAudio">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    quit ..Audio("TRANSLATION")
+]]></Implementation>
+</Method>
+
+<Method name="Audio">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>operation:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
+        set pRequest = ##class(Demo.Msg.AudioRequest).%New()
         do pRequest.%JSONImport(dynamic)
         $$$TRACE("Dynamic created")
         set pRequest.Operation = operation
@@ -396,10 +506,50 @@ Variation of an image</Description>
 </Class>
 
 
+<Class name="Demo.DT.AudioToOpenAiAudio">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66741,46434.80922</TimeChanged>
+<TimeCreated>66717,43221.073582</TimeCreated>
+<DependsOn>Demo.Msg.AudioRequest,St.OpenAi.Msg.Audio.AudioRequest</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='Demo.Msg.AudioRequest' targetClass='St.OpenAi.Msg.Audio.AudioRequest' create='new' language='objectscript' >
+<assign value='source.Audio' property='target.Audio' action='set' />
+<assign value='source.Type' property='target.Type' action='set' />
+<assign value='source.Language' property='target.Language' action='set' />
+<assign value='$CASE(source.Operation,"TRANSCRIPTION":"transcription", "TRANSLATION":"translation",:"transcription") ' property='target.Operation' action='set' />
+<if condition='source.FullInfo' >
+<true>
+<assign value='"verbose_json"' property='target.ResponseFormat' action='set' />
+</true>
+<false>
+<assign value='"json"' property='target.ResponseFormat' action='set' />
+</false>
+</if>
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
 <Class name="Demo.DT.ImageToOpenAiImage">
 <Super>Ens.DataTransformDTL</Super>
-<TimeChanged>66599,65823.698508</TimeChanged>
-<TimeCreated>66599,65409.240022</TimeCreated>
+<TimeChanged>66709,43156.419361</TimeChanged>
+<TimeCreated>66709,43156.419361</TimeCreated>
 <DependsOn>Demo.Msg.ImageRequest,St.OpenAi.Msg.Images.ImagesRequest</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
@@ -433,8 +583,8 @@ Variation of an image</Description>
 
 <Class name="Demo.DT.OpenAiChatToChat">
 <Super>Ens.DataTransformDTL</Super>
-<TimeChanged>66615,67892.66736</TimeChanged>
-<TimeCreated>66615,67712.609801</TimeCreated>
+<TimeChanged>66709,43156.42874</TimeChanged>
+<TimeCreated>66709,43156.42874</TimeCreated>
 <DependsOn>St.OpenAi.Msg.Chat.ChatResponse,Demo.Msg.ChatResponse</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
@@ -460,10 +610,42 @@ Variation of an image</Description>
 </Class>
 
 
+<Class name="Demo.DT.OpenAiIAudioToAudio">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66738,77720.246057</TimeChanged>
+<TimeCreated>66738,77702.333681</TimeCreated>
+<DependsOn>St.OpenAi.Msg.Audio.AudioResponse,Demo.Msg.AudioResponse</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='St.OpenAi.Msg.Audio.AudioResponse' targetClass='Demo.Msg.AudioResponse' create='new' language='objectscript' >
+<assign value='source.Task' property='target.Task' action='set' />
+<assign value='source.Language' property='target.Language' action='set' />
+<assign value='source.Duration' property='target.Duration' action='set' />
+<assign value='source.Text' property='target.Text' action='set' />
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
 <Class name="Demo.DT.OpenAiImageToImage">
 <Super>Ens.DataTransformDTL</Super>
-<TimeChanged>66600,43299.042615</TimeChanged>
-<TimeCreated>66599,67557.275809</TimeCreated>
+<TimeChanged>66709,43156.910222</TimeChanged>
+<TimeCreated>66709,43156.910222</TimeCreated>
 <DependsOn>St.OpenAi.Msg.Images.ImagesResponse,Demo.Msg.ImageResponse</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
@@ -498,10 +680,135 @@ Variation of an image</Description>
 </Class>
 
 
+<Class name="Demo.Msg.AudioRequest">
+<Super>Ens.Request,%JSON.Adaptor</Super>
+<TimeChanged>66741,46414.993467</TimeChanged>
+<TimeCreated>66716,49860.237463</TimeCreated>
+
+<Property name="Audio">
+<Description>
+Base64 of the audio to transcript/translate</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="%JSONFIELDNAME" value="audio"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Property name="Type">
+<Description>
+Type of file. (flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm.)</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="%JSONFIELDNAME" value="type"/>
+<Parameter name="MAXLEN"/>
+<Parameter name="VALUELIST" value=",flac,mp3,mp4,mpeg,mpga,m4a,ogg,wav,webm"/>
+</Property>
+
+<Property name="Language">
+<Description>
+Language to translate the audio</Description>
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="lang"/>
+<Parameter name="MAXLEN" value="3"/>
+</Property>
+
+<Property name="FullInfo">
+<Description>
+Retrieve all the info about the audio or only the text</Description>
+<Type>%Boolean</Type>
+<Parameter name="%JSONFIELDNAME" value="fullInfo"/>
+</Property>
+
+<Property name="Operation">
+<Description>
+Operation</Description>
+<Type>%String</Type>
+<Parameter name="%JSONINCLUDE" value="none"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>AudioRequestDefaultData</DefaultData>
+<Data name="AudioRequestDefaultData">
+<Subscript>"AudioRequest"</Subscript>
+<Value name="1">
+<Value>Audio</Value>
+</Value>
+<Value name="2">
+<Value>Language</Value>
+</Value>
+<Value name="3">
+<Value>FullInfo</Value>
+</Value>
+<Value name="4">
+<Value>Operation</Value>
+</Value>
+<Value name="5">
+<Value>FileName</Value>
+</Value>
+<Value name="6">
+<Value>Type</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="Demo.Msg.AudioResponse">
+<Super>Ens.Response,%JSON.Adaptor</Super>
+<TimeChanged>66738,77409.405007</TimeChanged>
+<TimeCreated>66738,71522.415678</TimeCreated>
+
+<Property name="Task">
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="task"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Property name="Language">
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="language"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Property name="Duration">
+<Type>%Decimal</Type>
+<Parameter name="%JSONFIELDNAME" value="duration"/>
+</Property>
+
+<Property name="Text">
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="text"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>AudioResponseDefaultData</DefaultData>
+<Data name="AudioResponseDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"AudioResponse"</Subscript>
+<Value name="1">
+<Value>Task</Value>
+</Value>
+<Value name="2">
+<Value>Language</Value>
+</Value>
+<Value name="3">
+<Value>Duration</Value>
+</Value>
+<Value name="4">
+<Value>Text</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
 <Class name="Demo.Msg.ChatRequest">
 <Super>Ens.Request,%JSON.Adaptor</Super>
-<TimeChanged>66615,66522.056721</TimeChanged>
-<TimeCreated>66615,66521.985417</TimeCreated>
+<TimeChanged>66709,43156.433912</TimeChanged>
+<TimeCreated>66709,43156.433912</TimeCreated>
 
 <Property name="Prompt">
 <Type>%String</Type>
@@ -513,7 +820,6 @@ Variation of an image</Description>
 <Type>%Storage.Persistent</Type>
 <DefaultData>ChatRequestDefaultData</DefaultData>
 <Data name="ChatRequestDefaultData">
-<Structure>listnode</Structure>
 <Subscript>"ChatRequest"</Subscript>
 <Value name="1">
 <Value>Prompt</Value>
@@ -525,8 +831,8 @@ Variation of an image</Description>
 
 <Class name="Demo.Msg.ChatResponse">
 <Super>Ens.Response,%JSON.Adaptor</Super>
-<TimeChanged>66615,67774.945013</TimeChanged>
-<TimeCreated>66615,66923.487111</TimeCreated>
+<TimeChanged>66709,43156.461806</TimeChanged>
+<TimeCreated>66709,43156.461806</TimeCreated>
 
 <Property name="Content">
 <Type>%String</Type>
@@ -538,7 +844,6 @@ Variation of an image</Description>
 <Type>%Storage.Persistent</Type>
 <DefaultData>ChatResponseDefaultData</DefaultData>
 <Data name="ChatResponseDefaultData">
-<Structure>listnode</Structure>
 <Subscript>"ChatResponse"</Subscript>
 <Value name="1">
 <Value>Content</Value>
@@ -550,8 +855,8 @@ Variation of an image</Description>
 
 <Class name="Demo.Msg.ImageRequest">
 <Super>Ens.Request,%JSON.Adaptor</Super>
-<TimeChanged>66599,68183.742105</TimeChanged>
-<TimeCreated>66599,57818.908444</TimeCreated>
+<TimeChanged>66709,43156.585705</TimeChanged>
+<TimeCreated>66709,43156.585705</TimeCreated>
 
 <Property name="Prompt">
 <Description>
@@ -642,8 +947,8 @@ Must be a valid PNG file, less than 4MB, and have the same dimensions as image</
 
 <Class name="Demo.Msg.ImageResponse">
 <Super>Ens.Response,%JSON.Adaptor</Super>
-<TimeChanged>66599,58002.324579</TimeChanged>
-<TimeCreated>66599,57898.969791</TimeCreated>
+<TimeChanged>66709,43156.563616</TimeChanged>
+<TimeCreated>66709,43156.563616</TimeCreated>
 
 <Property name="Data">
 <Description>
@@ -658,7 +963,6 @@ List of images required</Description>
 <Type>%Storage.Persistent</Type>
 <DefaultData>ImageResponseDefaultData</DefaultData>
 <Data name="ImageResponseDefaultData">
-<Structure>listnode</Structure>
 <Subscript>"ImageResponse"</Subscript>
 <Value name="1">
 <Value>Data</Value>

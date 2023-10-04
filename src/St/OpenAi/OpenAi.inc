@@ -23,6 +23,10 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 #Define ImageEdits "edits"
 #Define ImageVariations "variations"
 
+/// Audio operation
+#Define AudioTranslation "translation"
+#Define AudioTranscription "transcription"
+
 /// Model names
 #Define AdaText "text-ada-001"
 #Define BabbageText "text-babbage-001"
@@ -37,3 +41,4 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 #Define GPT432kContext "gpt-4-32k"
 #Define TextModerationStable "text-moderation-stable"
 #Define TextModerationLatest "text-moderation-latest"
+#Define Whisper "whisper-1"

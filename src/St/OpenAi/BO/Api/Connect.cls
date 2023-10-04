@@ -13,6 +13,10 @@ Parameter PathImageEdits = "images/edits";
 
 Parameter PathImageVariations = "images/variations";
 
+Parameter PathAudioTranscriptions = "audio/transcriptions";
+
+Parameter PathAudioTranslations = "audio/translations";
+
 Parameter DefaultNumOutputs = 5;
 
 /// Get the list of models availables
@@ -95,6 +99,7 @@ Method GetImages(pRequest As St.OpenAi.Msg.Images.ImagesRequest, Output pRespons
     {
         set apiResponse = ##class(St.OpenAi.Msg.Api.CallApi).%New()
         if (pRequest.Operation = $$$ImageVariations) set tSC = ..GetVariateImages(pRequest, .apiResponse)
+        if (pRequest.Operation = $$$ImageEdits) set tSC = ..GetEditImages(pRequest, .apiResponse)
         if (pRequest.Operation = $$$ImageGenerations) set tSC = ..GetCreateImages(pRequest, .apiResponse)
         $$$ThrowOnError(tSC)
         
@@ -160,6 +165,124 @@ Method GetVariateImages(pRequest As St.OpenAi.Msg.Images.ImagesRequest, Output p
     return status
 }
 
+/// Ask the API to edit an image
+Method GetEditImages(pRequest As St.OpenAi.Msg.Images.ImagesRequest, Output pResponse As St.OpenAi.Msg.Api.CallApi) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathImageEdits
+        set pContentType = "image/png" // All files mus to be a PNG
+        // Create a randomn name of the parameter image
+        set id = 0
+        set fileName = $System.Util.CreateGUID()_".png"
+        set pListParameters($INCREMENT(id)) = $Listbuild("Image","image",fileName)
+        set fileName = $System.Util.CreateGUID()_".png"
+        set pListParameters($INCREMENT(id)) = $Listbuild("Mask","mask",fileName)
+        if pRequest.Prompt '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Prompt","prompt","")
+        if pRequest.NumOfImages > 0 set pListParameters($INCREMENT(id)) = $Listbuild("NumOfImages","n","")
+        if pRequest.Size '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Size","size","")
+        if pRequest.ResponseFormat '= "" set pListParameters($INCREMENT(id)) = $Listbuild("ResponseFormat","response_format","")
+        set pListParameters = id
+
+        set tSC = ..CallWebForm(path, pRequest, "POST", .pListParameters, pContentType, .pResponse)
+        $$$ThrowOnError(tSC)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+/// Manage an audio to translate or transcript
+Method GetAudio(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Output pResponse As St.OpenAi.Msg.Audio.AudioResponse) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        // Add by default the name of the model. It should be 'whisper-1'
+        if pRequest.Model = "" set pRequest.Model = $$$Whisper
+        set apiResponse = ##class(St.OpenAi.Msg.Api.CallApi).%New()
+        if (pRequest.Operation = $$$AudioTranslation) set tSC = ..GetAudioTranslation(pRequest, .apiResponse)
+        if (pRequest.Operation = $$$AudioTranscription) set tSC = ..GetAudioTranscription(pRequest, .apiResponse)
+        $$$ThrowOnError(tSC)
+        
+        // All has gone well. Serialize the content into the class
+        set pResponse = ##class(St.OpenAi.Msg.Audio.AudioResponse).%New()
+        do pResponse.%JSONImport(apiResponse.Content)
+        do ..UpdateExtraContent(apiResponse, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+/// Ask the API to translation of an audio
+Method GetAudioTranslation(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Output pResponse As St.OpenAi.Msg.Api.CallApi) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathAudioTranslations
+        set pContentType = "application/json"
+        // Create a randomn name of the parameter audio
+        set fileName = $System.Util.CreateGUID()_"."_pRequest.Type
+        set id = 0
+        set pListParameters($INCREMENT(id)) = $Listbuild("Audio","file")
+        if pRequest.Model '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Model","model","")
+        if pRequest.ResponseFormat '= "" set pListParameters($INCREMENT(id)) = $Listbuild("ResponseFormat","response_format","")
+        if pRequest.Language '= "" set pListParameters($INCREMENT(id)) = $LISTBUILD("Language","lang","")
+        set pListParameters = id
+
+        set tSC = ..CallWebForm(path, pRequest, "POST", .pListParameters, pContentType, .pResponse)
+        $$$ThrowOnError(tSC)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+/// Ask the API to transcript of an audio
+Method GetAudioTranscription(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Output pResponse As St.OpenAi.Msg.Api.CallApi) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathAudioTranscriptions
+        set pContentType = "application/json"
+        // Create a randomn name of the parameter audio
+        set fileName = $System.Util.CreateGUID()_"."_pRequest.Type
+        set id = 0
+        set pListParameters($INCREMENT(id)) = $Listbuild("Audio","file",fileName)
+        if pRequest.Model '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Model","model","")
+        if pRequest.Prompt '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Prompt","prompt","")
+        if pRequest.Temperature '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Temperature","temperature","")
+        if pRequest.ResponseFormat '= "" set pListParameters($INCREMENT(id)) = $Listbuild("ResponseFormat","response_format","")
+        set pListParameters = id
+
+        set tSC = ..CallWebForm(path, pRequest, "POST", .pListParameters, pContentType, .pResponse)
+        $$$ThrowOnError(tSC)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
 /// MessageMap
 XData MessageMap
 {
@@ -175,6 +298,9 @@ XData MessageMap
     </MapItem>
     <MapItem MessageType="St.OpenAi.Msg.Images.ImagesRequest">
         <Method>GetImages</Method>
+    </MapItem>
+    <MapItem MessageType="St.OpenAi.Msg.Audio.AudioRequest">
+        <Method>GetAudio</Method>
     </MapItem>
 </MapItems>
 }
