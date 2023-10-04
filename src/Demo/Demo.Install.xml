@@ -26,8 +26,8 @@
         do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 
         // Add default parameters
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","ApiKey","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")
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","Organization","org-UAoCnffwAYPX1Y7Ribk84pd1")
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","ApiKey","sk-InsertYourApiKey")
+        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","Organization","org-InsertYourOrganization")
         do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","SSLConfig","OpenAiSSL")
 
         // Add SSL Certificate
