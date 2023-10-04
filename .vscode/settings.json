@@ -1,11 +1,7 @@
 {
     "objectscript.conn" :{
       "active": true,
-      "ns": "OPENAI",
-      "host": "localhost",
-      "port": 52772,
-      "username": "Superuser",
-      "password": "SYS",
-      "server": "local~iris"
+      "ns": "USER",
+      "server": "docker~iris"
     }
 }
