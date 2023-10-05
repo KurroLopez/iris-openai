@@ -235,7 +235,7 @@ Method GetAudioTranslation(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Output 
         // Create a randomn name of the parameter audio
         set fileName = $System.Util.CreateGUID()_"."_pRequest.Type
         set id = 0
-        set pListParameters($INCREMENT(id)) = $Listbuild("Audio","file")
+        set pListParameters($INCREMENT(id)) = $Listbuild("Audio","file",fileName)
         if pRequest.Model '= "" set pListParameters($INCREMENT(id)) = $Listbuild("Model","model","")
         if pRequest.ResponseFormat '= "" set pListParameters($INCREMENT(id)) = $Listbuild("ResponseFormat","response_format","")
         if pRequest.Language '= "" set pListParameters($INCREMENT(id)) = $LISTBUILD("Language","lang","")
