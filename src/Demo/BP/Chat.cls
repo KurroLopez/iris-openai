@@ -18,9 +18,19 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <sequence xend='200' yend='650' >
 <code name='Prepare Msg' xpos='200' ypos='250' >
 <![CDATA[ set context.MsgChatRequest = ##class(St.OpenAi.Msg.Chat.ChatRequest).%New()
+ set context.MsgChatRequest.Model = request.Model
+ if context.MsgChatRequest.Model = ""
+ {
  set context.MsgChatRequest.Model = $$$ChatGPTTurbo
+ }
+ 
  set context.MsgChatRequest.Temperature = 0.1
+ set context.MsgChatRequest.MaxTokens = request.MaxTokens
+ if context.MsgChatRequest.MaxTokens = 0
+ {
  set context.MsgChatRequest.MaxTokens = 100
+ }
+ 
  set context.MsgChatRequest.CompiledStop = "none"
  set message = ##class(St.OpenAi.Msg.Chat.ChatMessage).%New()
  set message.Role = $$$UserRole
