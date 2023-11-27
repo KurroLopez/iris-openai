@@ -108,7 +108,10 @@ ClassMethod Audio(operation As %String) As %Status
         set %response.Status= ..#HTTP200OK
         set %response.CharSet = "utf-8"
         set %response.ContentType = "application/json"
+        set tStream = ##class(%Stream.FileCharacter).%New()
         do pResponse.%JSONExportToStream(.tStream)
+        Do tStream.TranslateTableSet("UTF8")
+        Set tStream.BOM=$C(239,187,191)
         do tStream.OutputToDevice()
     }
     Catch ex {
@@ -220,7 +223,10 @@ ClassMethod Chat() As %Status
         set %response.Status= ..#HTTP200OK
         set %response.CharSet = "utf-8"
         set %response.ContentType = "application/json"
+        set tStream = ##class(%Stream.FileCharacter).%New()
         do pResponse.%JSONExportToStream(.tStream)
+        Do tStream.TranslateTableSet("UTF8")
+        Set tStream.BOM=$C(239,187,191)
         do tStream.OutputToDevice()
     }
     Catch ex {

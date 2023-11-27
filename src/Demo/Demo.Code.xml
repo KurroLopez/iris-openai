@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2021.1.3 (Build 389U)" ts="2023-10-04 07:09:24">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2023.3 (Build 254U)" ts="2023-11-19 17:11:50">
 <Class name="Demo.BP.Audio">
 <Description>
 </Description>
@@ -44,7 +44,7 @@ BPL Definition</Description>
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66709,43156.462277</TimeChanged>
+<TimeChanged>66797,61549.176052549</TimeChanged>
 <TimeCreated>66709,43156.462277</TimeCreated>
 
 <Storage name="Default">
@@ -64,9 +64,19 @@ BPL Definition</Description>
 <sequence xend='200' yend='650' >
 <code name='Prepare Msg' xpos='200' ypos='250' >
 <![CDATA[ set context.MsgChatRequest = ##class(St.OpenAi.Msg.Chat.ChatRequest).%New()
+ set context.MsgChatRequest.Model = request.Model
+ if context.MsgChatRequest.Model = ""
+ {
  set context.MsgChatRequest.Model = $$$ChatGPTTurbo
+ }
+ 
  set context.MsgChatRequest.Temperature = 0.1
+ set context.MsgChatRequest.MaxTokens = request.MaxTokens
+ if context.MsgChatRequest.MaxTokens = 0
+ {
  set context.MsgChatRequest.MaxTokens = 100
+ }
+ 
  set context.MsgChatRequest.CompiledStop = "none"
  set message = ##class(St.OpenAi.Msg.Chat.ChatMessage).%New()
  set message.Role = $$$UserRole
@@ -213,7 +223,7 @@ BPL Definition</Description>
 
 <Class name="Demo.BS.API.OpenAi">
 <Super>%CSP.REST,Ens.BusinessService</Super>
-<TimeChanged>66742,31539.703024</TimeChanged>
+<TimeChanged>66797,61556.528283529</TimeChanged>
 <TimeCreated>66709,43156.407622</TimeCreated>
 
 <XData name="UrlMap">
@@ -349,7 +359,10 @@ Variation of an image</Description>
         set %response.Status= ..#HTTP200OK
         set %response.CharSet = "utf-8"
         set %response.ContentType = "application/json"
+        set tStream = ##class(%Stream.FileCharacter).%New()
         do pResponse.%JSONExportToStream(.tStream)
+        Do tStream.TranslateTableSet("UTF8")
+        Set tStream.BOM=$C(239,187,191)
         do tStream.OutputToDevice()
     }
     Catch ex {
@@ -471,7 +484,10 @@ Variation of an image</Description>
         set %response.Status= ..#HTTP200OK
         set %response.CharSet = "utf-8"
         set %response.ContentType = "application/json"
+        set tStream = ##class(%Stream.FileCharacter).%New()
         do pResponse.%JSONExportToStream(.tStream)
+        Do tStream.TranslateTableSet("UTF8")
+        Set tStream.BOM=$C(239,187,191)
         do tStream.OutputToDevice()
     }
     Catch ex {
@@ -807,12 +823,23 @@ Operation</Description>
 
 <Class name="Demo.Msg.ChatRequest">
 <Super>Ens.Request,%JSON.Adaptor</Super>
-<TimeChanged>66709,43156.433912</TimeChanged>
+<TimeChanged>66797,57548.876905528</TimeChanged>
 <TimeCreated>66709,43156.433912</TimeCreated>
 
 <Property name="Prompt">
 <Type>%String</Type>
 <Parameter name="%JSONFIELDNAME" value="prompt"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Property name="MaxTokens">
+<Type>%Integer</Type>
+<Parameter name="%JSONFIELDNAME" value="max_tokens"/>
+</Property>
+
+<Property name="Model">
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="model"/>
 <Parameter name="MAXLEN"/>
 </Property>
 
@@ -823,6 +850,12 @@ Operation</Description>
 <Subscript>"ChatRequest"</Subscript>
 <Value name="1">
 <Value>Prompt</Value>
+</Value>
+<Value name="2">
+<Value>MaxTokens</Value>
+</Value>
+<Value name="3">
+<Value>Model</Value>
 </Value>
 </Data>
 </Storage>
