@@ -42,3 +42,5 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 #Define TextModerationStable "text-moderation-stable"
 #Define TextModerationLatest "text-moderation-latest"
 #Define Whisper "whisper-1"
+#Define TTS "tts-1"
+#Define TTSHD "tts-1-hd"

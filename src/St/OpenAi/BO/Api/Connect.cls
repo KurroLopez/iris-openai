@@ -17,6 +17,8 @@ Parameter PathAudioTranscriptions = "audio/transcriptions";
 
 Parameter PathAudioTranslations = "audio/translations";
 
+Parameter PathAudioSpeach = "audio/speech";
+
 Parameter DefaultNumOutputs = 5;
 
 /// Get the list of models availables
@@ -283,6 +285,27 @@ Method GetAudioTranscription(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Outpu
     return status
 }
 
+/// Ask the API to speach a text
+Method GetSpeach(pRequest As St.OpenAi.Msg.Audio.Speach.AudioRequest, Output pResponse As St.OpenAi.Msg.Audio.Speach.AudioResponse) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathAudioSpeach
+        set tSC = ..CallApiStream(path,pRequest,"POST",.pResponseStream)
+        set pResponse = ##class(St.OpenAi.Msg.Audio.Speach.AudioResponse).%New()
+        set pResponse.Content = pResponseStream.Content
+        do ..UpdateExtraContent(pResponseStream, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
 /// MessageMap
 XData MessageMap
 {
@@ -301,6 +324,9 @@ XData MessageMap
     </MapItem>
     <MapItem MessageType="St.OpenAi.Msg.Audio.AudioRequest">
         <Method>GetAudio</Method>
+    </MapItem>
+    <MapItem MessageType="St.OpenAi.Msg.Audio.Speach.AudioRequest">
+        <Method>GetSpeach</Method>
     </MapItem>
 </MapItems>
 }
