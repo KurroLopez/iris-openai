@@ -1,6 +1,6 @@
 Include Banksia.OpenAi.OpenAi
 
-Class Banksia.OpenAi.Msg.Model. Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Model.Model Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// The id/name of the model
