@@ -1,6 +1,8 @@
 Class Banksia.OpenAi.Msg.Base.Usage Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
+Parameter XMLTYPE = "BaseUsage";
+
 /// How many tokens did the prompt consist of
 Property PromptTokens As %Integer(%JSONFIELDNAME = "prompt_tokens");
 

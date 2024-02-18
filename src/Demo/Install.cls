@@ -16,8 +16,6 @@ ClassMethod Deploy()
         do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 
         // Add default parameters
-        do ..AddDefaultSetting(production,,"Banksia.OpenAi.Operation","ApiKey","sk-InsertHereYourApiKey")
-        do ..AddDefaultSetting(production,,"Banksia.OpenAi.Operation","Organization","org-InsertHereYourOrganizationID")
         do ..AddDefaultSetting(production,,"Banksia.OpenAi.Operation","SSLConfig","OpenAiSSL")
 
         // Add SSL Certificate

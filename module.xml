@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-  <Document name="iris-openai.ZPM">
+  <Document name="banksia-openai.ZPM">
     <Module>
       <Name>banksia-openai</Name>
 	  <Description>Connect to OpenAI API from IRIS</Description> 

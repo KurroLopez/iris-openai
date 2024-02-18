@@ -1,6 +1,7 @@
 Class Banksia.OpenAi.Msg.Model.Response Extends Banksia.OpenAi.Msg.Api.Response
 {
-Property ModelObject As Banksia.OpenAi.Msg.Model.;
+
+Property ModelObject As Banksia.OpenAi.Msg.Model.Model;
 
 /// Model
 Storage Default

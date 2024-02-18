@@ -5,14 +5,14 @@ Class Banksia.OpenAi.Msg.Chat.Choice Extends (%SerialObject, %JSON.Adaptor, %XML
 Property Index As %Integer(%JSONFIELDNAME = "index");
 
 /// The message that was presented to the user as the choice
-Property Message As ChatMessage(%JSONFIELDNAME = "message", XMLPROJECTION = "ELEMENT");
+Property Message As Message(%JSONFIELDNAME = "message", XMLPROJECTION = "ELEMENT");
 
 /// The reason why the chat interaction ended after this choice was presented to the user
 Property FinishReason As %String(%JSONFIELDNAME = "finish_reason", MAXLEN = "");
 
 /// Partial message "delta" from a stream. For example, the result from StreamChatEnumerableAsync.
 /// If this result object is not from a stream, this will be null
-Property Delta As ChatMessage(%JSONFIELDNAME = "delta", XMLPROJECTION = "ELEMENT");
+Property Delta As Message(%JSONFIELDNAME = "delta", XMLPROJECTION = "ELEMENT");
 
 Storage Default
 {

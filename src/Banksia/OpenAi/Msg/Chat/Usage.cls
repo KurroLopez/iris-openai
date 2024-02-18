@@ -1,6 +1,8 @@
 Class Banksia.OpenAi.Msg.Chat.Usage Extends Banksia.OpenAi.Msg.Base.Usage
 {
 
+Parameter XMLTYPE = "ChatUsage";
+
 /// The number of completion tokens used during the chat interaction
 Property CompletionTokens As %Integer(%JSONFIELDNAME = "completion_tokens");
 
