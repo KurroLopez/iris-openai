@@ -7,7 +7,7 @@
       <Version>1.1.1</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
-      <Resource Name="St.OpenAi.PKG"/>
+      <Resource Name="Banksia.OpenAi.PKG"/>
     </Module>
   </Document>
 </Export>

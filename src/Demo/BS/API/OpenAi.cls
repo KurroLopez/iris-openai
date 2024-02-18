@@ -139,7 +139,7 @@ ClassMethod Models(modelName As %String) As %Status
 
     Try {
         $$$TRACE("Init process")
-        set pRequest = ##class(St.OpenAi.Msg.Model.ModelRequest).%New()
+        set pRequest = ##class(Banksia.OpenAi.Msg.Model.ModelRequest).%New()
         set pRequest.Model = modelName
         $$$TRACE("Calling OpenAi")
         set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
@@ -176,7 +176,7 @@ ClassMethod AllModels() As %Status
 
     Try {
         $$$TRACE("Init process")
-        set pRequest = ##class(St.OpenAi.Msg.Model.ListModelRequest).%New()
+        set pRequest = ##class(Banksia.OpenAi.Msg.Model.ListModelRequest).%New()
         $$$TRACE("Calling OpenAi")
         set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
         $$$ThrowOnError(tSC)

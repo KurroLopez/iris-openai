@@ -10,18 +10,18 @@ Storage Default
 /// BPL Definition
 XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
-<process language='objectscript' request='Demo.Msg.ImageRequest' response='Demo.Msg.ImageResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<process language='objectscript' request='Demo.Msg.ImageRequest' response='Demo.Msg.ImageResponse' includes='Banksia.OpenAi.OpenAi' height='2000' width='2000' >
 <context>
-<property name='imagesRequest' type='St.OpenAi.Msg.Images.ImagesRequest' instantiate='0' />
-<property name='imagesResponse' type='St.OpenAi.Msg.Images.ImagesResponse' instantiate='0' />
+<property name='imagesRequest' type='Banksia.OpenAi.Msg.Images.ImagesRequest' instantiate='0' />
+<property name='imagesResponse' type='Banksia.OpenAi.Msg.Images.ImagesResponse' instantiate='0' />
 </context>
 <sequence xend='200' yend='650' >
 <transform name='Image to OpenAi image' class='Demo.DT.ImageToOpenAiImage' source='request' target='context.imagesRequest' xpos='200' ypos='250' />
-<call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
-<request type='St.OpenAi.Msg.Images.ImagesRequest' >
+<call name='Call Api' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='Banksia.OpenAi.Msg.Images.ImagesRequest' >
 <assign property="callrequest" value="context.imagesRequest" action="set" />
 </request>
-<response type='St.OpenAi.Msg.Images.ImagesResponse' >
+<response type='Banksia.OpenAi.Msg.Images.ImagesResponse' >
 <assign property="context.imagesResponse" value="callresponse" action="set" />
 </response>
 </call>

@@ -8,7 +8,7 @@ ClassMethod Deploy()
         set production = "Demo.Production"
         set currentNamespace = $Namespace
         // Add main paramateres
-        do ..AddItem(production, "St.OpenAi.BO.Api.Connect","St.OpenAi.BO.Api.Connect")
+        do ..AddItem(production, "Banksia.OpenAi.BO.Api.Connect","Banksia.OpenAi.BO.Api.Connect")
         do ..AddItem(production, "Demo.BP.Chat","Demo.BP.Chat")
         do ..AddItem(production, "Demo.BP.Audio","Demo.BP.Audio")
         do ..AddItem(production, "Demo.BP.Image","Demo.BP.Image")
@@ -16,9 +16,9 @@ ClassMethod Deploy()
         do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 
         // Add default parameters
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","ApiKey","sk-InsertHereYourApiKey")
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","Organization","org-InsertHereYourOrganizationID")
-        do ..AddDefaultSetting(production,,"St.OpenAi.BO.Api.Connect","SSLConfig","OpenAiSSL")
+        do ..AddDefaultSetting(production,,"Banksia.OpenAi.BO.Api.Connect","ApiKey","sk-InsertHereYourApiKey")
+        do ..AddDefaultSetting(production,,"Banksia.OpenAi.BO.Api.Connect","Organization","org-InsertHereYourOrganizationID")
+        do ..AddDefaultSetting(production,,"Banksia.OpenAi.BO.Api.Connect","SSLConfig","OpenAiSSL")
 
         // Add SSL Certificate
         New $Namespace

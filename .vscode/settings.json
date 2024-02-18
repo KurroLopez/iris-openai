@@ -1,6 +1,6 @@
 {
     "objectscript.conn" :{
-      "active": true,
+      "active": false,
       "ns": "USER",
       "server": "docker~iris"
     }

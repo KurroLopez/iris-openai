@@ -14,16 +14,16 @@ BPL Definition</Description>
 <Data><![CDATA[
 <process language='objectscript' request='Demo.Msg.AudioRequest' response='Demo.Msg.AudioResponse' height='2000' width='2000' >
 <context>
-<property name='audioRequest' type='St.OpenAi.Msg.Audio.AudioRequest' instantiate='0' />
-<property name='audioResponse' type='St.OpenAi.Msg.Audio.AudioRequest' instantiate='0' />
+<property name='audioRequest' type='Banksia.OpenAi.Msg.Audio.AudioRequest' instantiate='0' />
+<property name='audioResponse' type='Banksia.OpenAi.Msg.Audio.AudioRequest' instantiate='0' />
 </context>
 <sequence xend='200' yend='650' >
 <transform name='Audio to OpenAi audio' class='Demo.DT.AudioToOpenAiAudio' source='request' target='context.audioRequest' xpos='200' ypos='250' />
-<call name='Call API' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
-<request type='St.OpenAi.Msg.Audio.AudioRequest' >
+<call name='Call API' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='Banksia.OpenAi.Msg.Audio.AudioRequest' >
 <assign property="callrequest" value="context.audioRequest" action="set" />
 </request>
-<response type='St.OpenAi.Msg.Audio.AudioResponse' >
+<response type='Banksia.OpenAi.Msg.Audio.AudioResponse' >
 <assign property="context.audioResponse" value="callresponse" action="set" />
 </response>
 </call>
@@ -56,14 +56,14 @@ BPL Definition</Description>
 BPL Definition</Description>
 <XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
 <Data><![CDATA[
-<process language='objectscript' request='Demo.Msg.ChatRequest' response='Demo.Msg.ChatResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<process language='objectscript' request='Demo.Msg.ChatRequest' response='Demo.Msg.ChatResponse' includes='Banksia.OpenAi.OpenAi' height='2000' width='2000' >
 <context>
-<property name='MsgChatRequest' type='St.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
-<property name='MsgChatResponse' type='St.OpenAi.Msg.Chat.ChatResponse' instantiate='0' />
+<property name='MsgChatRequest' type='Banksia.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
+<property name='MsgChatResponse' type='Banksia.OpenAi.Msg.Chat.ChatResponse' instantiate='0' />
 </context>
 <sequence xend='200' yend='650' >
 <code name='Prepare Msg' xpos='200' ypos='250' >
-<![CDATA[ set context.MsgChatRequest = ##class(St.OpenAi.Msg.Chat.ChatRequest).%New()
+<![CDATA[ set context.MsgChatRequest = ##class(Banksia.OpenAi.Msg.Chat.ChatRequest).%New()
  set context.MsgChatRequest.Model = request.Model
  if context.MsgChatRequest.Model = ""
  {
@@ -78,16 +78,16 @@ BPL Definition</Description>
  }
  
  set context.MsgChatRequest.CompiledStop = "none"
- set message = ##class(St.OpenAi.Msg.Chat.ChatMessage).%New()
+ set message = ##class(Banksia.OpenAi.Msg.Chat.ChatMessage).%New()
  set message.Role = $$$UserRole
  set message.Content = request.Prompt
  do context.MsgChatRequest.Messages.Insert(message)]]]]><![CDATA[>
 </code>
-<call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
-<request type='St.OpenAi.Msg.Chat.ChatRequest' >
+<call name='Call Api' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='Banksia.OpenAi.Msg.Chat.ChatRequest' >
 <assign property="callrequest" value="context.MsgChatRequest" action="set" />
 </request>
-<response type='St.OpenAi.Msg.Chat.ChatResponse' >
+<response type='Banksia.OpenAi.Msg.Chat.ChatResponse' >
 <assign property="context.MsgChatResponse" value="callresponse" action="set" />
 </response>
 </call>
@@ -116,18 +116,18 @@ BPL Definition</Description>
 BPL Definition</Description>
 <XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
 <Data><![CDATA[
-<process language='objectscript' request='Demo.Msg.ImageRequest' response='Demo.Msg.ImageResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<process language='objectscript' request='Demo.Msg.ImageRequest' response='Demo.Msg.ImageResponse' includes='Banksia.OpenAi.OpenAi' height='2000' width='2000' >
 <context>
-<property name='imagesRequest' type='St.OpenAi.Msg.Images.ImagesRequest' instantiate='0' />
-<property name='imagesResponse' type='St.OpenAi.Msg.Images.ImagesResponse' instantiate='0' />
+<property name='imagesRequest' type='Banksia.OpenAi.Msg.Images.ImagesRequest' instantiate='0' />
+<property name='imagesResponse' type='Banksia.OpenAi.Msg.Images.ImagesResponse' instantiate='0' />
 </context>
 <sequence xend='200' yend='650' >
 <transform name='Image to OpenAi image' class='Demo.DT.ImageToOpenAiImage' source='request' target='context.imagesRequest' xpos='200' ypos='250' />
-<call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
-<request type='St.OpenAi.Msg.Images.ImagesRequest' >
+<call name='Call Api' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='Banksia.OpenAi.Msg.Images.ImagesRequest' >
 <assign property="callrequest" value="context.imagesRequest" action="set" />
 </request>
-<response type='St.OpenAi.Msg.Images.ImagesResponse' >
+<response type='Banksia.OpenAi.Msg.Images.ImagesResponse' >
 <assign property="context.imagesResponse" value="callresponse" action="set" />
 </response>
 </call>
@@ -156,7 +156,7 @@ BPL Definition</Description>
 BPL Definition</Description>
 <XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
 <Data><![CDATA[
-<process language='objectscript' request='Ens.Request' response='Ens.Response' includes='St.OpenAi.OpenAi' height='2000' width='2150' >
+<process language='objectscript' request='Ens.Request' response='Ens.Response' includes='Banksia.OpenAi.OpenAi' height='2000' width='2150' >
 <sequence xend='200' yend='700' >
 <switch name='CheckRequest' xpos='200' ypos='250' xend='200' yend='500' >
 <case condition='$classname(request)="Demo.Msg.ImageRequest"' name='Demo.Msg.ImageImageRequest' >
@@ -169,12 +169,12 @@ BPL Definition</Description>
 </response>
 </call>
 </case>
-<case condition='$classname(request)="St.OpenAi.Msg.Model.ModelRequest"' name='St.OpenAi.Msg.Model.ModelRequest' >
-<call name='Retrieve models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='470' ypos='400' >
-<request type='St.OpenAi.Msg.Model.ModelRequest' >
+<case condition='$classname(request)="Banksia.OpenAi.Msg.Model.ModelRequest"' name='Banksia.OpenAi.Msg.Model.ModelRequest' >
+<call name='Retrieve models' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='470' ypos='400' >
+<request type='Banksia.OpenAi.Msg.Model.ModelRequest' >
 <assign property="callrequest" value="request" action="set" />
 </request>
-<response type='St.OpenAi.Msg.Model.ModelResponse' >
+<response type='Banksia.OpenAi.Msg.Model.ModelResponse' >
 <assign property="response" value="callresponse" action="set" />
 </response>
 </call>
@@ -189,12 +189,12 @@ BPL Definition</Description>
 </response>
 </call>
 </case>
-<case condition='$classname(request)="St.OpenAi.Msg.Model.ListModelRequest"' name='St.OpenAi.Msg.Model.ListModelRequest' >
-<call name='Retrieve all models' target='St.OpenAi.BO.Api.Connect' async='1' xpos='1010' ypos='400' >
-<request type='St.OpenAi.Msg.Model.ListModelRequest' >
+<case condition='$classname(request)="Banksia.OpenAi.Msg.Model.ListModelRequest"' name='Banksia.OpenAi.Msg.Model.ListModelRequest' >
+<call name='Retrieve all models' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='1010' ypos='400' >
+<request type='Banksia.OpenAi.Msg.Model.ListModelRequest' >
 <assign property="callrequest" value="request" action="set" />
 </request>
-<response type='St.OpenAi.Msg.Model.ListModelResponse' >
+<response type='Banksia.OpenAi.Msg.Model.ListModelResponse' >
 <assign property="response" value="callresponse" action="set" />
 </response>
 </call>
@@ -394,7 +394,7 @@ Variation of an image</Description>
 
     Try {
         $$$TRACE("Init process")
-        set pRequest = ##class(St.OpenAi.Msg.Model.ModelRequest).%New()
+        set pRequest = ##class(Banksia.OpenAi.Msg.Model.ModelRequest).%New()
         set pRequest.Model = modelName
         $$$TRACE("Calling OpenAi")
         set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
@@ -434,7 +434,7 @@ Variation of an image</Description>
 
     Try {
         $$$TRACE("Init process")
-        set pRequest = ##class(St.OpenAi.Msg.Model.ListModelRequest).%New()
+        set pRequest = ##class(Banksia.OpenAi.Msg.Model.ListModelRequest).%New()
         $$$TRACE("Calling OpenAi")
         set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
         $$$ThrowOnError(tSC)
@@ -526,7 +526,7 @@ Variation of an image</Description>
 <Super>Ens.DataTransformDTL</Super>
 <TimeChanged>66741,46434.80922</TimeChanged>
 <TimeCreated>66717,43221.073582</TimeCreated>
-<DependsOn>Demo.Msg.AudioRequest,St.OpenAi.Msg.Audio.AudioRequest</DependsOn>
+<DependsOn>Demo.Msg.AudioRequest,Banksia.OpenAi.Msg.Audio.AudioRequest</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
 <Default>1</Default>
@@ -543,7 +543,7 @@ Variation of an image</Description>
 <XData name="DTL">
 <XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
 <Data><![CDATA[
-<transform sourceClass='Demo.Msg.AudioRequest' targetClass='St.OpenAi.Msg.Audio.AudioRequest' create='new' language='objectscript' >
+<transform sourceClass='Demo.Msg.AudioRequest' targetClass='Banksia.OpenAi.Msg.Audio.AudioRequest' create='new' language='objectscript' >
 <assign value='source.Audio' property='target.Audio' action='set' />
 <assign value='source.Type' property='target.Type' action='set' />
 <assign value='source.Language' property='target.Language' action='set' />
@@ -566,7 +566,7 @@ Variation of an image</Description>
 <Super>Ens.DataTransformDTL</Super>
 <TimeChanged>66709,43156.419361</TimeChanged>
 <TimeCreated>66709,43156.419361</TimeCreated>
-<DependsOn>Demo.Msg.ImageRequest,St.OpenAi.Msg.Images.ImagesRequest</DependsOn>
+<DependsOn>Demo.Msg.ImageRequest,Banksia.OpenAi.Msg.Images.ImagesRequest</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
 <Default>1</Default>
@@ -583,7 +583,7 @@ Variation of an image</Description>
 <XData name="DTL">
 <XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
 <Data><![CDATA[
-<transform sourceClass='Demo.Msg.ImageRequest' targetClass='St.OpenAi.Msg.Images.ImagesRequest' create='new' language='objectscript' >
+<transform sourceClass='Demo.Msg.ImageRequest' targetClass='Banksia.OpenAi.Msg.Images.ImagesRequest' create='new' language='objectscript' >
 <assign value='source.Prompt' property='target.Prompt' action='set' />
 <assign value='source.NumImage' property='target.NumOfImages' action='set' />
 <assign value='$CASE(source.Size,"S":"256x256","M":"512x512","L":"1024x1024",:"1024x1024")' property='target.Size' action='set' />
@@ -601,7 +601,7 @@ Variation of an image</Description>
 <Super>Ens.DataTransformDTL</Super>
 <TimeChanged>66709,43156.42874</TimeChanged>
 <TimeCreated>66709,43156.42874</TimeCreated>
-<DependsOn>St.OpenAi.Msg.Chat.ChatResponse,Demo.Msg.ChatResponse</DependsOn>
+<DependsOn>Banksia.OpenAi.Msg.Chat.ChatResponse,Demo.Msg.ChatResponse</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
 <Default>1</Default>
@@ -618,7 +618,7 @@ Variation of an image</Description>
 <XData name="DTL">
 <XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
 <Data><![CDATA[
-<transform sourceClass='St.OpenAi.Msg.Chat.ChatResponse' targetClass='Demo.Msg.ChatResponse' create='new' language='objectscript' >
+<transform sourceClass='Banksia.OpenAi.Msg.Chat.ChatResponse' targetClass='Demo.Msg.ChatResponse' create='new' language='objectscript' >
 <assign value='source.Choices.(1).Message.Content' property='target.Content' action='set' />
 </transform>
 ]]></Data>
@@ -630,7 +630,7 @@ Variation of an image</Description>
 <Super>Ens.DataTransformDTL</Super>
 <TimeChanged>66738,77720.246057</TimeChanged>
 <TimeCreated>66738,77702.333681</TimeCreated>
-<DependsOn>St.OpenAi.Msg.Audio.AudioResponse,Demo.Msg.AudioResponse</DependsOn>
+<DependsOn>Banksia.OpenAi.Msg.Audio.AudioResponse,Demo.Msg.AudioResponse</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
 <Default>1</Default>
@@ -647,7 +647,7 @@ Variation of an image</Description>
 <XData name="DTL">
 <XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
 <Data><![CDATA[
-<transform sourceClass='St.OpenAi.Msg.Audio.AudioResponse' targetClass='Demo.Msg.AudioResponse' create='new' language='objectscript' >
+<transform sourceClass='Banksia.OpenAi.Msg.Audio.AudioResponse' targetClass='Demo.Msg.AudioResponse' create='new' language='objectscript' >
 <assign value='source.Task' property='target.Task' action='set' />
 <assign value='source.Language' property='target.Language' action='set' />
 <assign value='source.Duration' property='target.Duration' action='set' />
@@ -662,7 +662,7 @@ Variation of an image</Description>
 <Super>Ens.DataTransformDTL</Super>
 <TimeChanged>66709,43156.910222</TimeChanged>
 <TimeCreated>66709,43156.910222</TimeCreated>
-<DependsOn>St.OpenAi.Msg.Images.ImagesResponse,Demo.Msg.ImageResponse</DependsOn>
+<DependsOn>Banksia.OpenAi.Msg.Images.ImagesResponse,Demo.Msg.ImageResponse</DependsOn>
 
 <Parameter name="IGNOREMISSINGSOURCE">
 <Default>1</Default>
@@ -679,7 +679,7 @@ Variation of an image</Description>
 <XData name="DTL">
 <XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
 <Data><![CDATA[
-<transform sourceClass='St.OpenAi.Msg.Images.ImagesResponse' targetClass='Demo.Msg.ImageResponse' create='new' language='objectscript' >
+<transform sourceClass='Banksia.OpenAi.Msg.Images.ImagesResponse' targetClass='Demo.Msg.ImageResponse' create='new' language='objectscript' >
 <foreach property='source.Data()' key='k1' >
 <if condition='source.Data.(k1).Url = ""' >
 <true>
