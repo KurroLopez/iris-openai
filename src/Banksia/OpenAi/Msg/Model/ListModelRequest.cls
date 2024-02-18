@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Model.ListModelRequest Extends Ens.Request
+Class Banksia.OpenAi.Msg.ListModel.Request Extends Ens.Request
 {
 
 Storage Default

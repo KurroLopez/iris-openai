@@ -2,7 +2,7 @@
 <Export generator="Cache" version="25">
   <Document name="iris-openai.ZPM">
     <Module>
-      <Name>iris-openai</Name>
+      <Name>banksia-openai</Name>
 	  <Description>Connect to OpenAI API from IRIS</Description> 
       <Version>1.1.1</Version>
       <Packaging>module</Packaging>

@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Audio.AudioResponse Extends Banksia.OpenAi.Msg.Api.Response
+Class Banksia.OpenAi.Msg.Audio.Response Extends Banksia.OpenAi.Msg.Api.Response
 {
 
 /// Task name
@@ -14,7 +14,7 @@ Property Duration As %Decimal(%JSONFIELDNAME = "duration");
 Property Text As %String(%JSONFIELDNAME = "text", MAXLEN = "");
 
 /// Info about toknes, compression ratio, etc..
-Property Segments As list Of Banksia.OpenAi.Msg.Audio.AudioSegments(%JSONFIELDNAME = "segments", XMLPROJECTION = "ELEMENT");
+Property Segments As list Of Banksia.OpenAi.Msg.Audio.Segments(%JSONFIELDNAME = "segments", XMLPROJECTION = "ELEMENT");
 
 Storage Default
 {

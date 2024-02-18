@@ -1,8 +1,8 @@
-Class Banksia.OpenAi.Msg.Images.ImagesResponse Extends Banksia.OpenAi.Msg.Api.Response
+Class Banksia.OpenAi.Msg.Images.Response Extends Banksia.OpenAi.Msg.Api.Response
 {
 
 /// List of results of the embedding
-Property Data As list Of Banksia.OpenAi.Msg.Images.ImagesData(%JSONFIELDNAME = "data");
+Property Data As list Of Banksia.OpenAi.Msg.Images.Data(%JSONFIELDNAME = "data");
 
 Storage Default
 {

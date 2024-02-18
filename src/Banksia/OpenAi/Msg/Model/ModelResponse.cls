@@ -1,9 +1,8 @@
-Class Banksia.OpenAi.Msg.Model.ModelResponse Extends Banksia.OpenAi.Msg.Api.Response
+Class Banksia.OpenAi.Msg.Model.Response Extends Banksia.OpenAi.Msg.Api.Response
 {
+Property ModelObject As Banksia.OpenAi.Msg.Model.;
 
 /// Model
-Property ModelObject As Banksia.OpenAi.Msg.Model.Model;
-
 Storage Default
 {
 <Data name="ModelResponseDefaultData">
@@ -13,6 +12,8 @@ Storage Default
 </Value>
 </Data>
 <DefaultData>ModelResponseDefaultData</DefaultData>
+<Description>
+<![CDATA[Model]]></Description>
 <Type>%Storage.Persistent</Type>
 }
 

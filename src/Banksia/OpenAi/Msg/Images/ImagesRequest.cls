@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Images.ImagesRequest Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Images.Request Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// Operation of image <br>

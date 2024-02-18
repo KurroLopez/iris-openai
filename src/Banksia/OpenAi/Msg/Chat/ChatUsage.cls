@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Chat.ChatUsage Extends Banksia.OpenAi.Msg.Base.Usage
+Class Banksia.OpenAi.Msg.Chat.Usage Extends Banksia.OpenAi.Msg.Base.Usage
 {
 
 /// The number of completion tokens used during the chat interaction

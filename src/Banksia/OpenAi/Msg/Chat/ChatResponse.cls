@@ -1,14 +1,14 @@
-Class Banksia.OpenAi.Msg.Chat.ChatResponse Extends Banksia.OpenAi.Msg.Api.Response
+Class Banksia.OpenAi.Msg.Chat.Response Extends Banksia.OpenAi.Msg.Api.Response
 {
 
 /// The identifier of the result, which may be used during troubleshooting
 Property Id As %String(%JSONFIELDNAME = "id", MAXLEN = "");
 
 /// The list of choices that the user was presented with during the chat interaction
-Property Choices As list Of Banksia.OpenAi.Msg.Chat.ChatChoice(%JSONFIELDNAME = "choices", XMLPROJECTION = "ELEMENT");
+Property Choices As list Of Banksia.OpenAi.Msg.Chat.Choice(%JSONFIELDNAME = "choices", XMLPROJECTION = "ELEMENT");
 
 /// The usage statistics for the chat interaction
-Property Usage As Banksia.OpenAi.Msg.Chat.ChatUsage(%JSONFIELDNAME = "usage", XMLPROJECTION = "ELEMENT");
+Property Usage As Banksia.OpenAi.Msg.Chat.Usage(%JSONFIELDNAME = "usage", XMLPROJECTION = "ELEMENT");
 
 Storage Default
 {

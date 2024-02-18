@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Chat.ChatChoice Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Chat.Choice Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// The index of the choice in the list of choices
@@ -31,7 +31,7 @@ Storage Default
 </Value>
 </Data>
 <State>ChatChoiceState</State>
-<StreamLocation>^Banksia.OpenAi.Msg.Chat.ChatChoiceS</StreamLocation>
+<StreamLocation>^Banksia.OpenAi.Msg.Chat.ChoiceS</StreamLocation>
 <Type>%Storage.Serial</Type>
 }
 

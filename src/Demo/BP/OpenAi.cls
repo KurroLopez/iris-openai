@@ -23,12 +23,12 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </response>
 </call>
 </case>
-<case condition='$classname(request)="Banksia.OpenAi.Msg.Model.ModelRequest"' name='Banksia.OpenAi.Msg.Model.ModelRequest' >
-<call name='Retrieve models' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='470' ypos='400' >
-<request type='Banksia.OpenAi.Msg.Model.ModelRequest' >
+<case condition='$classname(request)="Banksia.OpenAi.Msg.Model.Request"' name='Banksia.OpenAi.Msg.Model.Request' >
+<call name='Retrieve models' target='Banksia.OpenAi.Operation' async='1' xpos='470' ypos='400' >
+<request type='Banksia.OpenAi.Msg.Model.Request' >
 <assign property="callrequest" value="request" action="set" />
 </request>
-<response type='Banksia.OpenAi.Msg.Model.ModelResponse' >
+<response type='Banksia.OpenAi.Msg.Model.Response' >
 <assign property="response" value="callresponse" action="set" />
 </response>
 </call>
@@ -43,12 +43,12 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </response>
 </call>
 </case>
-<case condition='$classname(request)="Banksia.OpenAi.Msg.Model.ListModelRequest"' name='Banksia.OpenAi.Msg.Model.ListModelRequest' >
-<call name='Retrieve all models' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='1010' ypos='400' >
-<request type='Banksia.OpenAi.Msg.Model.ListModelRequest' >
+<case condition='$classname(request)="Banksia.OpenAi.Msg.ListModel.Request"' name='Banksia.OpenAi.Msg.ListModel.Request' >
+<call name='Retrieve all models' target='Banksia.OpenAi.Operation' async='1' xpos='1010' ypos='400' >
+<request type='Banksia.OpenAi.Msg.ListModel.Request' >
 <assign property="callrequest" value="request" action="set" />
 </request>
-<response type='Banksia.OpenAi.Msg.Model.ListModelResponse' >
+<response type='Banksia.OpenAi.Msg.ListModel.Response' >
 <assign property="response" value="callresponse" action="set" />
 </response>
 </call>

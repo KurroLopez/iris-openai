@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Audio.AudioSegments Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Audio.Segments Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// Id

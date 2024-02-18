@@ -1,11 +1,11 @@
-Class Banksia.OpenAi.Msg.Chat.ChatRequest Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Chat.Request Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// The model to use for this request
 Property Model As %String(%JSONFIELDNAME = "model", MAXLEN = "");
 
 /// The messages to send with this Chat Request
-Property Messages As list Of Banksia.OpenAi.Msg.Chat.ChatMessage(%JSONFIELDNAME = "messages", XMLPROJECTION = "ELEMENT");
+Property Messages As list Of Banksia.OpenAi.Msg.Chat.Message(%JSONFIELDNAME = "messages", XMLPROJECTION = "ELEMENT");
 
 /// What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) 
 /// for ones with a well-defined answer. It is generally recommend to use this or TopP but not both.

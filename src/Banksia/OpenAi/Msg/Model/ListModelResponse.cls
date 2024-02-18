@@ -1,9 +1,8 @@
-Class Banksia.OpenAi.Msg.Model.ListModelResponse Extends Banksia.OpenAi.Msg.Api.Response
+Class Banksia.OpenAi.Msg.ListModel.Response Extends Banksia.OpenAi.Msg.Api.Response
 {
+Property Data As list Of Banksia.OpenAi.Msg.Model.(%JSONFIELDNAME = "data", XMLPROJECTION = "ELEMENT");
 
 /// List of models
-Property Data As list Of Banksia.OpenAi.Msg.Model.Model(%JSONFIELDNAME = "data", XMLPROJECTION = "ELEMENT");
-
 /// Object
 Property Obj As %String(%JSONFIELDNAME = "object", MAXLEN = "");
 

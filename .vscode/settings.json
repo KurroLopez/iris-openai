@@ -1,7 +1,12 @@
 {
     "objectscript.conn" :{
-      "active": false,
+      "active": true,
       "ns": "USER",
-      "server": "docker~iris"
+      "username": "_SYSTEM",
+      "password": "SYS",
+      "docker-compose": {
+        "service": "iris",
+        "internalPort": 52773
+      }
     }
 }

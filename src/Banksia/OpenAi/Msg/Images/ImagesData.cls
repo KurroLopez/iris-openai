@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Images.ImagesData Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Images.Data Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// The url of the image result

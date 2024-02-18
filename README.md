@@ -33,11 +33,11 @@ $ docker-compose up -d
 ## How to use it
 Step 1: Create your production and insert a new Business Operation called "Banksia.OpenAi.OpenAi" using the class with the same name.
 
-![](Add_Banksia.OpenAi.BO.Api.Connect.gif)
+![](Add_Banksia.OpenAi.Operation.gif)
 
 Step 2: Modify the component's properties to include the Secret Key and OrganizationID
 
-![](Configure_Banksia.OpenAi.BO.Api.Connect.png)
+![](Configure_Banksia.OpenAi.Operation.png)
 
 ## How to Test it
 There is a demo created in this composition to check the connection with OpenAI.

@@ -1,4 +1,4 @@
-Class Demo.DT.AudioToOpenAiAudio Extends Ens.DataTransformDTL [ DependsOn = (Demo.Msg.AudioRequest, Banksia.OpenAi.Msg.Audio.AudioRequest) ]
+Class Demo.DT.AudioToOpenAiAudio Extends Ens.DataTransformDTL [ DependsOn = (Demo.Msg.AudioRequest, Banksia.OpenAi.Msg.Audio.Request) ]
 {
 
 Parameter IGNOREMISSINGSOURCE = 1;
@@ -9,7 +9,7 @@ Parameter TREATEMPTYREPEATINGFIELDASNULL = 0;
 
 XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 {
-<transform sourceClass='Demo.Msg.AudioRequest' targetClass='Banksia.OpenAi.Msg.Audio.AudioRequest' create='new' language='objectscript' >
+<transform sourceClass='Demo.Msg.AudioRequest' targetClass='Banksia.OpenAi.Msg.Audio.Request' create='new' language='objectscript' >
 <assign value='source.Audio' property='target.Audio' action='set' />
 <assign value='source.Type' property='target.Type' action='set' />
 <assign value='source.Language' property='target.Language' action='set' />

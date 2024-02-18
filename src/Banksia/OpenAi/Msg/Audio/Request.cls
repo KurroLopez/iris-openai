@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Audio.AudioRequest Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Audio.Request Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// Operation of audio <br>

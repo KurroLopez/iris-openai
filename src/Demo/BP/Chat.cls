@@ -12,12 +12,12 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
 <process language='objectscript' request='Demo.Msg.ChatRequest' response='Demo.Msg.ChatResponse' includes='Banksia.OpenAi.OpenAi' height='2000' width='2000' >
 <context>
-<property name='MsgChatRequest' type='Banksia.OpenAi.Msg.Chat.ChatRequest' instantiate='0' />
-<property name='MsgChatResponse' type='Banksia.OpenAi.Msg.Chat.ChatResponse' instantiate='0' />
+<property name='MsgChatRequest' type='Banksia.OpenAi.Msg.Chat.Request' instantiate='0' />
+<property name='MsgChatResponse' type='Banksia.OpenAi.Msg.Chat.Response' instantiate='0' />
 </context>
 <sequence xend='200' yend='650' >
 <code name='Prepare Msg' xpos='200' ypos='250' >
-<![CDATA[ set context.MsgChatRequest = ##class(Banksia.OpenAi.Msg.Chat.ChatRequest).%New()
+<![CDATA[ set context.MsgChatRequest = ##class(Banksia.OpenAi.Msg.Chat.Request).%New()
  set context.MsgChatRequest.Model = request.Model
  if context.MsgChatRequest.Model = ""
  {
@@ -32,16 +32,16 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
  }
  
  set context.MsgChatRequest.CompiledStop = "none"
- set message = ##class(Banksia.OpenAi.Msg.Chat.ChatMessage).%New()
+ set message = ##class(Banksia.OpenAi.Msg.Chat.Message).%New()
  set message.Role = $$$UserRole
  set message.Content = request.Prompt
  do context.MsgChatRequest.Messages.Insert(message)]]>
 </code>
-<call name='Call Api' target='Banksia.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
-<request type='Banksia.OpenAi.Msg.Chat.ChatRequest' >
+<call name='Call Api' target='Banksia.OpenAi.Operation' async='1' xpos='200' ypos='350' >
+<request type='Banksia.OpenAi.Msg.Chat.Request' >
 <assign property="callrequest" value="context.MsgChatRequest" action="set" />
 </request>
-<response type='Banksia.OpenAi.Msg.Chat.ChatResponse' >
+<response type='Banksia.OpenAi.Msg.Chat.Response' >
 <assign property="context.MsgChatResponse" value="callresponse" action="set" />
 </response>
 </call>

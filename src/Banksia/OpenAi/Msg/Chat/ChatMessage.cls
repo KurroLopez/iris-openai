@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Chat.ChatMessage Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
+Class Banksia.OpenAi.Msg.Chat.Message Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// The role of the message, which can be "system", "assistant" or "user"

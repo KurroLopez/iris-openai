@@ -1,4 +1,4 @@
-Class Banksia.OpenAi.Msg.Model.ModelRequest Extends Ens.Request
+Class Banksia.OpenAi.Msg.Model.Request Extends Ens.Request
 {
 
 /// Model Id
