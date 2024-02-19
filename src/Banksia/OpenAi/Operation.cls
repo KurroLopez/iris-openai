@@ -90,7 +90,6 @@ Method CallApi(pPath As %String, pParameter = "", pVerb As %String = "GET", Outp
         }
 
         set tSC = ..Adapter.SendFormDataArray(.tHttpResponse, pVerb, tHttpRequest,,,url)
-        if $$$ISERR(tSC) $$$ThrowStatus(tSC)
         // Check status code
         set statusCode = tHttpResponse.StatusCode
         set content = ""
@@ -110,6 +109,7 @@ Method CallApi(pPath As %String, pParameter = "", pVerb As %String = "GET", Outp
             set objError = ##class(%DynamicAbstractObject).%FromJSON(content)
             $$$ThrowStatus($$$ERROR($$$GeneralError, "Error "_statusCode_" - "_objError.error.message))
         }
+        if $$$ISERR(tSC) $$$ThrowStatus(tSC)
 
         set pResponse.Content = ##class(%DynamicAbstractObject).%FromJSON(content)
     }
@@ -305,6 +305,45 @@ Method CreateChatCompletion(pRequest As Banksia.OpenAi.Msg.Chat.Request, Output 
         // All has gone well. Serialize the content into the class
         set pResponse = ##class(Banksia.OpenAi.Msg.Chat.Response).%New()
         do pResponse.%JSONImport(apiResponse.Content)
+        do ..UpdateExtraContent(apiResponse, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+/// Ask the API to perform text based task using a simple prompt
+Method GetSimplePrompt(pRequest As Banksia.OpenAi.Msg.SimplePrompt.Request, Output pResponse As Banksia.OpenAi.Msg.SimplePrompt.Response) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set apiResponse = ##class(Banksia.OpenAi.Msg.Api.CallApi).%New()
+        set ChatRequest=##class(Banksia.OpenAi.Msg.Chat.Request).%New()
+        $$$ThrowOnError(pRequest.%JSONExportToString(.requestJson))
+        $$$ThrowOnError(ChatRequest.%JSONImport(requestJson))
+        set ChatRequest.NumChoicesPerMessage = 1
+        set ChatRequest.Stream=0
+        set SystemMessage=##class(Banksia.OpenAi.Msg.Chat.Message).%New()
+        set SystemMessage.Role="system"
+        set SystemMessage.Content=pRequest.Prompt
+        do ChatRequest.Messages.Insert(SystemMessage)
+        set UserMessage=##class(Banksia.OpenAi.Msg.Chat.Message).%New()
+        set UserMessage.Role="user"
+        set UserMessage.Content=pRequest.UserInput
+        do ChatRequest.Messages.Insert(UserMessage)
+        set tSC = ..CallApi(..#PathChat,ChatRequest,"POST",.apiResponse)
+        $$$ThrowOnError(tSC)
+        // All has gone well. Serialize the content into the class
+        set ChatResponse = ##class(Banksia.OpenAi.Msg.Chat.Response).%New()
+        $$$ThrowOnError(ChatResponse.%JSONImport(apiResponse.Content))
+        set pResponse = ##class(Banksia.OpenAi.Msg.SimplePrompt.Response).%New()
+        set pResponse.Content=ChatResponse.Choices.GetAt(1).Message.Content
+        set pResponse.Usage=ChatResponse.Usage
         do ..UpdateExtraContent(apiResponse, .pResponse)
     }
     Catch ex {
@@ -526,6 +565,9 @@ XData MessageMap
     </MapItem>
     <MapItem MessageType="Banksia.OpenAi.Msg.Audio.Request">
         <Method>GetAudio</Method>
+    </MapItem>
+    <MapItem MessageType="Banksia.OpenAi.Msg.SimplePrompt.Request">
+        <Method>GetSimplePrompt</Method>
     </MapItem>
 </MapItems>
 }

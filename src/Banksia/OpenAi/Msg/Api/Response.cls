@@ -1,6 +1,8 @@
 Class Banksia.OpenAi.Msg.Api.Response Extends (Ens.Response, %JSON.Adaptor, %XML.Adaptor)
 {
 
+Parameter %JSONIGNOREINVALIDFIELD = 1;
+
 /// The time when the model was created in unix epoch format
 Property Created As %Integer(%JSONFIELDNAME = "created");
 

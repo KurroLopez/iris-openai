@@ -1,34 +1,21 @@
-# iris-openAi
-Libraries to use the OpenAI API methods in a simple way and integrated with an IRIS production
+# Banksia-openai
+OpenAI IRIS Interoperability Business Operation based on great work by Kurro Lopez at https://github.com/KurroLopez/iris-openai
 
 ## The idea
-There are some libraries for connecting to the OpenAI API via Python, Java, C#, etc., but no library for ObjectScript.
-With these classes, you can connect directly to the OpenAI API, and you can interact with them only using request and response messages prepared to connect to OpenAI.
+You will get a single business operation Banksia.OpenAi.Operation which supports all API calls by OpenAI API: chat, images, audio etc
 
 ## Prerequisites
-Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
+You will need OpenAI API key and a little balance on your OpenAI account to test this operation. See details here https://platform.openai.com/docs/quickstart?context=curl
 
 ## Installation 
 
-- Clone/git pull the repo into any local directory
-
-```powershell
-
-git clone https://github.com/KurroLopez/iris-openai.git .\iris-openai
+- Install using ZPM 
 
 ```
-
-Open the terminal in this directory and run:
-
-```
-$ docker-compose build
+zpm "install banksia-openai"
 ```
 
-3. Run the IRIS container with your project:
-
-```
-$ docker-compose up -d
-```
+Alternatively just load "src/Banksia" folder into your IRIS instance.
 
 ## How to use it
 Step 1: Create your production and insert a new Business Operation called "Banksia.OpenAi.OpenAi" using the class with the same name.
@@ -42,6 +29,6 @@ Step 2: Modify the component's properties to include the Secret Key and Organiza
 ## How to Test it
 There is a demo created in this composition to check the connection with OpenAI.
 
-Also, there is a Postman collection exported to test. It's prepared to connecto with Docker compose.
+Also, there is a Postman collection exported to test. It's prepared to connect with Docker compose.
 
 ![](Demo.OpenAi.Postman.png)

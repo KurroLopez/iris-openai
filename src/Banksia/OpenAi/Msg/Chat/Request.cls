@@ -1,6 +1,8 @@
 Class Banksia.OpenAi.Msg.Chat.Request Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
 {
 
+Parameter %JSONIGNOREINVALIDFIELD = 1;
+
 /// The model to use for this request
 Property Model As %String(%JSONFIELDNAME = "model", MAXLEN = "");
 

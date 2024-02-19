@@ -1,6 +1,8 @@
 Class Banksia.OpenAi.Msg.Chat.Choice Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
+Parameter %JSONIGNOREINVALIDFIELD = 1;
+
 /// The index of the choice in the list of choices
 Property Index As %Integer(%JSONFIELDNAME = "index");
 
