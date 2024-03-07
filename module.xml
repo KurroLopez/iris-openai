@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-  <Document name="banksia-openai.ZPM">
+  <Document name="bg-openai.ZPM">
     <Module>
-      <Name>banksia-openai</Name>
+      <Name>bg-openai</Name>
 	  <Description>Connect to OpenAI API from IRIS</Description> 
-      <Version>1.1.1</Version>
+      <Version>1.1.2</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="Banksia.OpenAi.PKG"/>
