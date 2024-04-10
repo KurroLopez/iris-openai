@@ -26,6 +26,7 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 /// Audio operation
 #Define AudioTranslation "translation"
 #Define AudioTranscription "transcription"
+#Define AudioSpeach "speach"
 
 /// Model names
 #Define AdaText "text-ada-001"

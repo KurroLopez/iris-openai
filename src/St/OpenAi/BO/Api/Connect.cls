@@ -19,6 +19,8 @@ Parameter PathAudioTranslations = "audio/translations";
 
 Parameter PathAudioSpeach = "audio/speech";
 
+Parameter PathModeration = "moderations";
+
 Parameter DefaultNumOutputs = 5;
 
 /// Get the list of models availables
@@ -286,15 +288,23 @@ Method GetAudioTranscription(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Outpu
 }
 
 /// Ask the API to speach a text
-Method GetSpeach(pRequest As St.OpenAi.Msg.Audio.Speach.AudioRequest, Output pResponse As St.OpenAi.Msg.Audio.Speach.AudioResponse) As %Status
+Method GetSpeach(pRequest As St.OpenAi.Msg.Audio.SpeachRequest, Output pResponse As St.OpenAi.Msg.Audio.SpeachResponse) As %Status
 {
     set status = $$$OK
     try
     {
         set path = ..#PathAudioSpeach
         set tSC = ..CallApiStream(path,pRequest,"POST",.pResponseStream)
-        set pResponse = ##class(St.OpenAi.Msg.Audio.Speach.AudioResponse).%New()
-        set pResponse.Content = pResponseStream.Content
+        set pResponse = ##class(St.OpenAi.Msg.Audio.SpeachResponse).%New()
+        do pResponseStream.Content.Rewind()
+        set contentfile = ##class(St.OpenAi.B64.Util).B64EncodeStream(pResponseStream.Content)
+        set content = ""
+        while ('contentfile.AtEnd)
+        {
+            set content = content_contentfile.Read()
+        }
+        set pResponse.Content=content
+        set pResponse.ResponseFormat = pRequest.ResponseFormat
         do ..UpdateExtraContent(pResponseStream, .pResponse)
     }
     Catch ex {
@@ -325,7 +335,7 @@ XData MessageMap
     <MapItem MessageType="St.OpenAi.Msg.Audio.AudioRequest">
         <Method>GetAudio</Method>
     </MapItem>
-    <MapItem MessageType="St.OpenAi.Msg.Audio.Speach.AudioRequest">
+    <MapItem MessageType="St.OpenAi.Msg.Audio.SpeachRequest">
         <Method>GetSpeach</Method>
     </MapItem>
 </MapItems>

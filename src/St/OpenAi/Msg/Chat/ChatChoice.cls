@@ -14,6 +14,11 @@ Property FinishReason As %String(%JSONFIELDNAME = "finish_reason", MAXLEN = "");
 /// If this result object is not from a stream, this will be null
 Property Delta As ChatMessage(%JSONFIELDNAME = "delta", XMLPROJECTION = "ELEMENT");
 
+/// Whether to return log probabilities of the output tokens or not. 
+/// If true, returns the log probabilities of each output token returned in the content of message. 
+/// This option is currently not available on the gpt-4-vision-preview model.
+Property LogProbs As %Boolean(%JSONFIELDNAME = "logprobs");
+
 Storage Default
 {
 <Data name="ChatChoiceState">
@@ -28,6 +33,9 @@ Storage Default
 </Value>
 <Value name="4">
 <Value>Delta</Value>
+</Value>
+<Value name="5">
+<Value>LogProbs</Value>
 </Value>
 </Data>
 <State>ChatChoiceState</State>

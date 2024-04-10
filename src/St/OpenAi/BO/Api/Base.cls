@@ -57,6 +57,8 @@ Method CallApi(pPath As %String, pParameter = "", pVerb As %String = "GET", Outp
             set tStream = ##class(%Stream.GlobalCharacter).%New()
             do pParameter.%JSONExportToStream(.tStream)
             do tHttpRequest.EntityBody.CopyFrom(tStream)
+            do pParameter.%JSONExportToString(.tJson)
+            $$$TRACE(tJson)
 
         } else
         {
@@ -80,6 +82,7 @@ Method CallApi(pPath As %String, pParameter = "", pVerb As %String = "GET", Outp
         {
             set content = content_tHttpResponse.Data.Read()
         }
+        $$$TRACE(content)
         // Get headers with the information
         set pResponse.Organization = ..Organization
         set pResponse.RequestId = tHttpResponse.GetHeader("x-request-id")

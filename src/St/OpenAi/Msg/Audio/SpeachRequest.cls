@@ -1,14 +1,14 @@
-Class St.OpenAi.Msg.Audio.Speach.AudioRequest Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
+Class St.OpenAi.Msg.Audio.SpeachRequest Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
 {
 
 /// The model to use for this request
-Property Model As %String(%JSONFIELDNAME = "model", MAXLEN = "", VALUELIST = ",tts-1,tts-1-hd") [ Required ];
+Property Model As %String(%JSONFIELDNAME = "model", MAXLEN = "", VALUELIST = ",tts-1,tts-1-hd") [ InitialExpression = "tts-1-hd", Required ];
 
 /// The text to generate audio for. The maximum length is 4096 characters.
 Property Prompt As %String(%JSONFIELDNAME = "input", MAXLEN = 4096) [ Required ];
 
 /// The voice to use when generating the audio. Supported voices are alloy, echo, fable, onyx, nova, and shimmer
-Property Voice As %String(%JSONFIELDNAME = "voice", VALUELIST = ",alloy,echo,fable,onyx,nova,shimmer") [ Required ];
+Property Voice As %String(%JSONFIELDNAME = "voice", VALUELIST = ",alloy,echo,fable,onyx,nova,shimmer") [ InitialExpression = "alloy", Required ];
 
 /// The format to audio in. Supported formats are mp3, opus, aac, and flac. 
 /// Defaults to mp3
@@ -19,8 +19,8 @@ Property Speed As %Decimal(%JSONFIELDNAME = "speed", MAXVAL = 4.0, MINVAL = 0.25
 
 Storage Default
 {
-<Data name="AudioRequestDefaultData">
-<Subscript>"AudioRequest"</Subscript>
+<Data name="SpeachRequestDefaultData">
+<Subscript>"SpeachRequest"</Subscript>
 <Value name="1">
 <Value>Model</Value>
 </Value>
@@ -37,7 +37,7 @@ Storage Default
 <Value>Speed</Value>
 </Value>
 </Data>
-<DefaultData>AudioRequestDefaultData</DefaultData>
+<DefaultData>SpeachRequestDefaultData</DefaultData>
 <Type>%Storage.Persistent</Type>
 }
 

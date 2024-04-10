@@ -1,6 +1,9 @@
 Class St.OpenAi.Msg.Images.ImagesRequest Extends (Ens.Request, %JSON.Adaptor, %XML.Adaptor)
 {
 
+/// The model to use for this request
+Property Model As %String(%JSONFIELDNAME = "model", MAXLEN = "");
+
 /// Operation of image <br>
 /// <ul>
 /// <li><b>generations:</b> Create new images according to prompt</li>
@@ -60,6 +63,9 @@ Storage Default
 </Value>
 <Value name="8">
 <Value>ResponseFormat</Value>
+</Value>
+<Value name="9">
+<Value>Model</Value>
 </Value>
 </Data>
 <DefaultData>ImagesRequestDefaultData</DefaultData>
