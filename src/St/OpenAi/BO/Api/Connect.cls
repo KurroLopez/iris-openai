@@ -316,6 +316,29 @@ Method GetSpeach(pRequest As St.OpenAi.Msg.Audio.SpeachRequest, Output pResponse
     return status
 }
 
+Method GetModeration(pRequest As St.OpenAi.Msg.Moderation.ModerationRequest, Output pResponse As St.OpenAi.Msg.Moderation.ModerationResponse) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set apiResponse = ##class(St.OpenAi.Msg.Api.CallApi).%New()
+        if pRequest.Model = "" set pRequest.Model = $$$TextModerationLatest
+        set tSC = ..CallApi(..#PathModeration,pRequest,"POST",.apiResponse)
+        $$$ThrowOnError(tSC)
+        // All has gone well. Serialize the content into the class
+        set pResponse = ##class(St.OpenAi.Msg.Moderation.ModerationResponse).%New()
+        set r = pResponse.%JSONImport(apiResponse.Content)
+        do ..UpdateExtraContent(apiResponse, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
 /// MessageMap
 XData MessageMap
 {
@@ -337,6 +360,9 @@ XData MessageMap
     </MapItem>
     <MapItem MessageType="St.OpenAi.Msg.Audio.SpeachRequest">
         <Method>GetSpeach</Method>
+    </MapItem>
+    <MapItem MessageType="St.OpenAi.Msg.Moderation.ModerationRequest">
+        <Method>GetModeration</Method>
     </MapItem>
 </MapItems>
 }
