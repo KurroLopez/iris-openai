@@ -13,7 +13,7 @@ ClassMethod Deploy()
         do ..AddItem(production, "Demo.BP.Audio","Demo.BP.Audio")
         do ..AddItem(production, "Demo.BP.Speach","Demo.BP.Speach")
         do ..AddItem(production, "Demo.BP.Image","Demo.BP.Image")
-        do ..AddItem(production, "Demo.BP.Moderation","Demo.BP.Modeartion")
+        do ..AddItem(production, "Demo.BP.Moderation","Demo.BP.Moderation")
         do ..AddItem(production, "Demo.BP.OpenAi","Demo.BP.OpenAi")
         do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 
