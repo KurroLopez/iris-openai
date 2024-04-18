@@ -10,6 +10,9 @@ Property Choices As list Of St.OpenAi.Msg.Chat.ChatChoice(%JSONFIELDNAME = "choi
 /// The usage statistics for the chat interaction
 Property Usage As St.OpenAi.Msg.Chat.ChatUsage(%JSONFIELDNAME = "usage", XMLPROJECTION = "ELEMENT");
 
+/// This fingerprint represents the backend configuration that the model runs with.
+Property SystemFingerprint As %String(%JSONFIELDNAME = "system_fingerprint", MAXLEN = "");
+
 Storage Default
 {
 <Data name="ChatResponseDefaultData">
@@ -22,6 +25,9 @@ Storage Default
 </Value>
 <Value name="3">
 <Value>Usage</Value>
+</Value>
+<Value name="4">
+<Value>SystemFingerprint</Value>
 </Value>
 </Data>
 <DefaultData>ChatResponseDefaultData</DefaultData>

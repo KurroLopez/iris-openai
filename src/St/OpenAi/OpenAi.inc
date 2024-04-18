@@ -26,6 +26,7 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 /// Audio operation
 #Define AudioTranslation "translation"
 #Define AudioTranscription "transcription"
+#Define AudioSpeach "speach"
 
 /// Model names
 #Define AdaText "text-ada-001"
@@ -42,3 +43,5 @@ ROUTINE St.OpenAi.OpenAi [Type=INC]
 #Define TextModerationStable "text-moderation-stable"
 #Define TextModerationLatest "text-moderation-latest"
 #Define Whisper "whisper-1"
+#Define TTS "tts-1"
+#Define TTSHD "tts-1-hd"

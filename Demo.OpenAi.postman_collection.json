@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"prompt\": \"two cats with hat reading a comic\",\r\n    \"size\": \"M\",\r\n    \"base64\": false,\r\n    \"number_images\": 1\r\n}",
+							"raw": "{\r\n    \"prompt\": \"A photograph of a white Siamese cat.\",\r\n    \"size\": \"M\",\r\n    \"base64\": false,\r\n    \"number_images\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -188,7 +188,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"prompt\": \"How is the sky colour?\"\r\n}",
+							"raw": "{\r\n    \"model\": \"gpt-4\",\r\n    \"prompt\": \"¿Por qué la tierra es plana?\",\r\n    \"max_tokens\": 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -243,7 +243,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:42773/openai/api/models/gpt-3.5-turbo",
+							"raw": "http://localhost:42773/openai/api/models/gpt-4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -253,7 +253,7 @@
 								"openai",
 								"api",
 								"models",
-								"gpt-3.5-turbo"
+								"gpt-4"
 							]
 						}
 					},
@@ -321,6 +321,72 @@
 								"api",
 								"audio",
 								"translation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Audio speach",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"input\": \"The quick brown fox jumped over the lazy dog\",\r\n    \"voice\": \"onyx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:42773/openai/api/audio/speach",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "42773",
+							"path": [
+								"openai",
+								"api",
+								"audio",
+								"speach"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Moderation",
+			"item": [
+				{
+					"name": "Moderation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"input\": \"I wanna jump throw a window\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:42773/openai/api/moderation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "42773",
+							"path": [
+								"openai",
+								"api",
+								"moderation"
 							]
 						}
 					},

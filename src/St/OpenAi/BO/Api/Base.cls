@@ -57,6 +57,8 @@ Method CallApi(pPath As %String, pParameter = "", pVerb As %String = "GET", Outp
             set tStream = ##class(%Stream.GlobalCharacter).%New()
             do pParameter.%JSONExportToStream(.tStream)
             do tHttpRequest.EntityBody.CopyFrom(tStream)
+            do pParameter.%JSONExportToString(.tJson)
+            $$$TRACE(tJson)
 
         } else
         {
@@ -80,6 +82,7 @@ Method CallApi(pPath As %String, pParameter = "", pVerb As %String = "GET", Outp
         {
             set content = content_tHttpResponse.Data.Read()
         }
+        $$$TRACE(content)
         // Get headers with the information
         set pResponse.Organization = ..Organization
         set pResponse.RequestId = tHttpResponse.GetHeader("x-request-id")
@@ -187,6 +190,73 @@ Method CallWebForm(pPath As %String, pParameter As %ArrayOfDataTypes, pVerb As %
             $$$ThrowStatus($$$ERROR($$$GeneralError, "Error "_statusCode_" - "_objError.error.message))
         }
         set pResponse.Content = ##class(%DynamicAbstractObject).%FromJSON(content)
+    }
+    catch excepcion
+    {
+        set ret = excepcion.AsStatus()
+    }
+    
+    Quit ret
+}
+
+Method CallApiStream(pPath As %String, pParameter = "", pVerb As %String = "GET", Output pResponse As St.OpenAi.Msg.Api.CallApiStream) As %Status
+{
+    #Dim excepcion As %Exception.AbstractException
+
+    Set pResponse = ##class(St.OpenAi.Msg.Api.CallApi).%New()
+    set ret = $$$OK
+
+    set url = $$$FormatText(..#ApiUrlFormat,..#ApiVersion, pPath)
+    set ..Adapter.URL = url
+    set ..Adapter.HTTPServer = ..#OpenAiServer
+    try
+    {
+        set tSC = ..initializeRest(.tHttpRequest)
+        $$$ThrowOnError(tSC)
+
+        if (pVerb '= "GET")
+        {
+            // The parameters class is serialized as JSon
+            set tStream = ##class(%Stream.GlobalCharacter).%New()
+            do pParameter.%JSONExportToStream(.tStream)
+            do tHttpRequest.EntityBody.CopyFrom(tStream)
+
+        } else
+        {
+            // For GET parameters, pParameters is a Listbuild with param name and param value
+            // set pParameters = $LISTBUILD($LISTBUILD("param1","value1"),$LISTBUILD("param2","value2"))
+            if $GET(pParameter,0) '= 0
+            {
+                for i=1:1:$LISTLENGTH(pParameter)
+                {
+                    do tHttpRequest.SetParam($LIST($LIST(pParameter,i),1),$LIST($LIST(pParameter,i),2))
+                }
+            }
+        }
+
+        set tSC = ..Adapter.SendFormDataArray(.tHttpResponse, pVerb, tHttpRequest,,,url)
+        if $$$ISERR(tSC) $$$ThrowStatus(tSC)
+        // Check status code
+        set statusCode = tHttpResponse.StatusCode
+        set content = ""
+        while (tHttpResponse.Data.AtEnd = 0)
+        {
+            set content = content_tHttpResponse.Data.Read()
+        }
+        // Get headers with the information
+        set pResponse.Organization = ..Organization
+        set pResponse.RequestId = tHttpResponse.GetHeader("x-request-id")
+        set pResponse.OpenaiVersion = tHttpResponse.GetHeader("openai-version")
+
+        // If statusCode is not 200, throw the exception and add the error message
+        if (statusCode '= 200)
+        {
+	        $$$TRACE("Content: "_content)
+            set objError = ##class(%DynamicAbstractObject).%FromJSON(content)
+            $$$ThrowStatus($$$ERROR($$$GeneralError, "Error "_statusCode_" - "_objError.error.message))
+        }
+
+        set pResponse.Content = tHttpResponse.Data
     }
     catch excepcion
     {

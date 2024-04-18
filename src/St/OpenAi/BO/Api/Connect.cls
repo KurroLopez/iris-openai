@@ -17,6 +17,10 @@ Parameter PathAudioTranscriptions = "audio/transcriptions";
 
 Parameter PathAudioTranslations = "audio/translations";
 
+Parameter PathAudioSpeach = "audio/speech";
+
+Parameter PathModeration = "moderations";
+
 Parameter DefaultNumOutputs = 5;
 
 /// Get the list of models availables
@@ -283,6 +287,58 @@ Method GetAudioTranscription(pRequest As St.OpenAi.Msg.Audio.AudioRequest, Outpu
     return status
 }
 
+/// Ask the API to speach a text
+Method GetSpeach(pRequest As St.OpenAi.Msg.Audio.SpeachRequest, Output pResponse As St.OpenAi.Msg.Audio.SpeachResponse) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set path = ..#PathAudioSpeach
+        set tSC = ..CallApiStream(path,pRequest,"POST",.pResponseStream)
+        set pResponse = ##class(St.OpenAi.Msg.Audio.SpeachResponse).%New()
+        do pResponseStream.Content.Rewind()
+        set contentfile = ##class(St.OpenAi.B64.Util).B64EncodeStream(pResponseStream.Content)
+        set content = ""
+        while ('contentfile.AtEnd)
+        {
+            set content = content_contentfile.Read()
+        }
+        set pResponse.Content=content
+        set pResponse.ResponseFormat = pRequest.ResponseFormat
+        do ..UpdateExtraContent(pResponseStream, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
+Method GetModeration(pRequest As St.OpenAi.Msg.Moderation.ModerationRequest, Output pResponse As St.OpenAi.Msg.Moderation.ModerationResponse) As %Status
+{
+    set status = $$$OK
+    try
+    {
+        set apiResponse = ##class(St.OpenAi.Msg.Api.CallApi).%New()
+        if pRequest.Model = "" set pRequest.Model = $$$TextModerationLatest
+        set tSC = ..CallApi(..#PathModeration,pRequest,"POST",.apiResponse)
+        $$$ThrowOnError(tSC)
+        // All has gone well. Serialize the content into the class
+        set pResponse = ##class(St.OpenAi.Msg.Moderation.ModerationResponse).%New()
+        set r = pResponse.%JSONImport(apiResponse.Content)
+        do ..UpdateExtraContent(apiResponse, .pResponse)
+    }
+    Catch ex {
+        set status = ex.AsStatus()
+        set msgError = $System.Status.GetOneStatusText(status,1)
+        $$$ThrowOnError($System.Status.Error(5001,"Internal error: "_msgError))
+
+    }
+    return status
+}
+
 /// MessageMap
 XData MessageMap
 {
@@ -301,6 +357,12 @@ XData MessageMap
     </MapItem>
     <MapItem MessageType="St.OpenAi.Msg.Audio.AudioRequest">
         <Method>GetAudio</Method>
+    </MapItem>
+    <MapItem MessageType="St.OpenAi.Msg.Audio.SpeachRequest">
+        <Method>GetSpeach</Method>
+    </MapItem>
+    <MapItem MessageType="St.OpenAi.Msg.Moderation.ModerationRequest">
+        <Method>GetModeration</Method>
     </MapItem>
 </MapItems>
 }
