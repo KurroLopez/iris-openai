@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2024.1 (Build 262U)" ts="2024-04-10 08:05:08">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2024.1 (Build 262U)" ts="2024-04-18 17:26:26">
 <Class name="Demo.Install">
 <Super>St.Tools.Deploy</Super>
-<TimeChanged>66940,28868.516722813</TimeChanged>
+<TimeChanged>66948,62714.725214675</TimeChanged>
 <TimeCreated>66597,71189.954196</TimeCreated>
 
 <UDLText name="T">
@@ -23,6 +23,7 @@
         do ..AddItem(production, "Demo.BP.Audio","Demo.BP.Audio")
         do ..AddItem(production, "Demo.BP.Speach","Demo.BP.Speach")
         do ..AddItem(production, "Demo.BP.Image","Demo.BP.Image")
+        do ..AddItem(production, "Demo.BP.Moderation","Demo.BP.Modeartion")
         do ..AddItem(production, "Demo.BP.OpenAi","Demo.BP.OpenAi")
         do ..AddItem(production, "Demo.BS.API.OpenAi","Demo.BS.API.OpenAi")
 

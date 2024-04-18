@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2024.1 (Build 262U)" ts="2024-04-10 08:04:48">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2024.1 (Build 262U)" ts="2024-04-18 17:22:37">
 <Class name="Demo.BP.Audio">
 <Description>
 </Description>
@@ -140,11 +140,51 @@ BPL Definition</Description>
 </Class>
 
 
+<Class name="Demo.BP.Moderation">
+<Description>
+</Description>
+<Super>Ens.BusinessProcessBPL</Super>
+<TimeChanged>66946,71242.96354331</TimeChanged>
+<TimeCreated>66946,62965.25690061</TimeCreated>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+</Storage>
+
+<XData name="BPL">
+<Description>
+BPL Definition</Description>
+<XMLNamespace>http://www.intersystems.com/bpl</XMLNamespace>
+<Data><![CDATA[
+<process language='objectscript' request='Demo.Msg.ModerationRequest' response='Demo.Msg.ModerationResponse' includes='St.OpenAi.OpenAi' height='2000' width='2000' >
+<context>
+<property name='ModerationRequest' type='St.OpenAi.Msg.Moderation.ModerationRequest' instantiate='0' />
+<property name='ModerationResponse' type='St.OpenAi.Msg.Moderation.ModerationResponse' instantiate='0' />
+</context>
+<sequence xend='200' yend='650' >
+<transform name='Moderation to OpenAi Moderation' class='Demo.DT.ModerationToOpenAiModeration' source='request' target='context.ModerationRequest' xpos='200' ypos='250' />
+<call name='Call Api' target='St.OpenAi.BO.Api.Connect' async='1' xpos='200' ypos='350' >
+<request type='St.OpenAi.Msg.Moderation.ModerationRequest' >
+<assign property="callrequest" value="context.ModerationRequest" action="set" languageOverride="" />
+</request>
+<response type='St.OpenAi.Msg.Moderation.ModerationResponse' >
+<assign property="context.ModerationResponse" value="callresponse" action="set" languageOverride="" />
+</response>
+</call>
+<sync name='Wait Call APi' calls='Call Api' type='all' xpos='200' ypos='450' />
+<transform name='OpenAi Moderation to Moderation' class='Demo.DT.OpenAiModerationToModeration' source='context.ModerationResponse' target='response' xpos='200' ypos='550' />
+</sequence>
+</process>
+]]></Data>
+</XData>
+</Class>
+
+
 <Class name="Demo.BP.OpenAi">
 <Description>
 </Description>
 <Super>Ens.BusinessProcessBPL</Super>
-<TimeChanged>66940,28978.010428768</TimeChanged>
+<TimeChanged>66946,72713.321731222</TimeChanged>
 <TimeCreated>66709,43156.552637</TimeCreated>
 
 <Storage name="Default">
@@ -219,11 +259,21 @@ BPL Definition</Description>
 </response>
 </call>
 </case>
+<case condition='$classname(request)="Demo.Msg.ModerationRequest"' name='Demo.Msg.ModerationRequest' >
+<call name='Moderation' target='Demo.BP.Moderation' async='1' xpos='1550' ypos='400' >
+<request type='Demo.Msg.ModerationRequest' >
+<assign property="callrequest" value="request" action="set" languageOverride="" />
+</request>
+<response type='Demo.Msg.ModerationResponse' >
+<assign property="response" value="callresponse" action="set" languageOverride="" />
+</response>
+</call>
+</case>
 <default>
 <empty name='Do nothing' xpos='1820' ypos='400' />
 </default>
 </switch>
-<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models,Audio managment,Audio Speach' type='all' xpos='200' ypos='600' />
+<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models,Audio managment,Audio Speach,Moderation' type='all' xpos='200' ypos='600' />
 </sequence>
 </process>
 ]]></Data>
@@ -273,7 +323,7 @@ BPL Definition</Description>
 
 <Class name="Demo.BS.API.OpenAi">
 <Super>%CSP.REST,Ens.BusinessService</Super>
-<TimeChanged>66940,28975.620603499</TimeChanged>
+<TimeChanged>66946,72130.769387832</TimeChanged>
 <TimeCreated>66709,43156.407622</TimeCreated>
 
 <XData name="UrlMap">
@@ -289,6 +339,7 @@ BPL Definition</Description>
     <Route Url="(?i)/models/:modelname" Method="GET" Call="Models"/>
     <Route Url="(?i)/models" Method="GET" Call="AllModels"/>
     <Route Url="(?i)/chat" Method="POST" Call="Chat"/>
+    <Route Url="(?i)/moderation" Method="POST" Call="Moderation"/>
 </Routes>
 ]]></Data>
 </XData>
@@ -597,6 +648,51 @@ Variation of an image</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="Moderation">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set %response.ContentType = "application/json; charset=utf-8"
+    set $ZSTORAGE=-1
+
+    do ##class(Ens.Director).CreateBusinessService(..#CLASSBS, .service)
+
+    Try {
+        $$$TRACE("Init process")
+        set dynamic = ##class(%Library.DynamicObject).%FromJSON(%request.Content)
+        set pRequest = ##class(Demo.Msg.ModerationRequest).%New()
+        do pRequest.%JSONImport(dynamic)
+        $$$TRACE("Dynamic created")
+        $$$TRACE("Calling OpenAi")
+        set tSC = service.SendRequestSync(..#BPOPENAI, pRequest, .pResponse)
+        $$$ThrowOnError(tSC)
+        $$$TRACE("Init process")
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set tStream = ##class(%Stream.FileCharacter).%New()
+        do pResponse.%JSONExportToStream(.tStream)
+        Do tStream.TranslateTableSet("UTF8")
+        Set tStream.BOM=$C(239,187,191)
+        do tStream.OutputToDevice()
+    }
+    Catch ex {
+        Set tSC=ex.AsStatus()
+		set errorCode = $system.Status.GetErrorCodes(tSC)
+        Set msgError = $System.Status.GetOneStatusText(tSC,1)
+        set pError = ##class(%Library.DynamicObject).%New()
+        set %response.Status= ..#HTTP200OK
+        set %response.CharSet = "utf-8"
+        set %response.ContentType = "application/json"
+        set pError.code = errorCode
+        Set pError.message = msgError
+        write pError.%ToJSON()
+    }
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
 <Method name="OnProcessInput">
 <FormalSpec><![CDATA[pInput:%RegisteredObject,*pOutput:%RegisteredObject,&pHint:%String]]></FormalSpec>
 <ReturnType>%Status</ReturnType>
@@ -681,6 +777,35 @@ Variation of an image</Description>
 <assign value='$CASE(source.Operation,"CREATE":"generations", "EDIT":"edits", "VARIATION":"variations",:"generations") ' property='target.Operation' action='set' />
 <assign value='source.Image' property='target.Image' action='set' />
 <assign value='source.Mask' property='target.Mask' action='set' />
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Demo.DT.ModerationToOpenAiModeration">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66944,44333.130151614</TimeChanged>
+<TimeCreated>66944,44333.130151614</TimeCreated>
+<DependsOn>Demo.Msg.ModerationRequest,St.OpenAi.Msg.Moderation.ModerationRequest</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='Demo.Msg.ModerationRequest' targetClass='St.OpenAi.Msg.Moderation.ModerationRequest' create='new' language='objectscript' >
+<assign value='source.Prompt' property='target.Input' action='set' />
 </transform>
 ]]></Data>
 </XData>
@@ -780,6 +905,164 @@ Variation of an image</Description>
 </false>
 </if>
 </foreach>
+</transform>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="Demo.DT.OpenAiModerationToModeration">
+<Super>Ens.DataTransformDTL</Super>
+<TimeChanged>66946,71829.719135925</TimeChanged>
+<TimeCreated>66946,65793.114567994</TimeCreated>
+<DependsOn>St.OpenAi.Msg.Moderation.ModerationResponse,Demo.Msg.ModerationResponse</DependsOn>
+
+<Parameter name="IGNOREMISSINGSOURCE">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="REPORTERRORS">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="TREATEMPTYREPEATINGFIELDASNULL">
+<Default>0</Default>
+</Parameter>
+
+<XData name="DTL">
+<XMLNamespace>http://www.intersystems.com/dtl</XMLNamespace>
+<Data><![CDATA[
+<transform sourceClass='St.OpenAi.Msg.Moderation.ModerationResponse' targetClass='Demo.Msg.ModerationResponse' create='new' language='objectscript' >
+<if condition='source.Result.(1).Flagged' >
+<true>
+<code>
+<![CDATA[ set first = 1]]]]><![CDATA[></code>
+<if condition='source.Result.(1).Categories.Hate' >
+<true>
+<code>
+<![CDATA[ set text = "Hate"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.Hate * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.HateThreatening' >
+<true>
+<code>
+<![CDATA[ set text = "Hate threatening"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.HateThreatening * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.Harassment' >
+<true>
+<code>
+<![CDATA[ set text = "Harassment"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.Harassment * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.HarassmentThreatening' >
+<true>
+<code>
+<![CDATA[ set text = "Harassment threatening"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.HarassmentThreatening * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.SelfHarm' >
+<true>
+<code>
+<![CDATA[ set text = "Self harm"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.SelfHarm * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.SelfHarmIntent' >
+<true>
+<code>
+<![CDATA[ set text = "Self harm intent"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.SelfHarmIntent * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.SelfHarmInstructions' >
+<true>
+<code>
+<![CDATA[ set text = "Self harm instructions"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.SelfHarmInstructions * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.Sexual' >
+<true>
+<code>
+<![CDATA[ set text = "Sexual"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.Sexual * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.SexualMinors' >
+<true>
+<code>
+<![CDATA[ set text = "Sexual minors"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.SexualMinors * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.Violence' >
+<true>
+<code>
+<![CDATA[ set text = "Violence"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.Violence * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+<if condition='source.Result.(1).Categories.ViolenceGraphic' >
+<true>
+<code>
+<![CDATA[ set text = "Violence graphic"
+ if 'first set text = ", "_text
+ set score = source.Result.GetAt(1).CategoryScores.ViolenceGraphic * 100
+ set text = text_"("_$FNumber(score, "",2)_"%)"
+ set first = 0]]]]><![CDATA[></code>
+<assign value='target.Description_text' property='target.Description' action='set' />
+</true>
+</if>
+</true>
+<false>
+<assign value='"Neutral"' property='target.Description' action='set' />
+</false>
+</if>
 </transform>
 ]]></Data>
 </XData>
@@ -1149,6 +1432,61 @@ List of images required</Description>
 <Subscript>"ImageResponse"</Subscript>
 <Value name="1">
 <Value>Data</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="Demo.Msg.ModerationRequest">
+<Super>Ens.Request,%JSON.Adaptor</Super>
+<TimeChanged>66944,43984.790744661</TimeChanged>
+<TimeCreated>66944,43984.704980113</TimeCreated>
+
+<Property name="Prompt">
+<Description>
+The text to moderate</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="%JSONFIELDNAME" value="input"/>
+<Parameter name="MAXLEN" value="4096"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>ModerationRequestDefaultData</DefaultData>
+<Data name="ModerationRequestDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"ModerationRequest"</Subscript>
+<Value name="1">
+<Value>Prompt</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="Demo.Msg.ModerationResponse">
+<Super>Ens.Response,%JSON.Adaptor</Super>
+<TimeChanged>66946,63108.581868913</TimeChanged>
+<TimeCreated>66946,63108.429144158</TimeCreated>
+
+<Property name="Description">
+<Description>
+Description</Description>
+<Type>%String</Type>
+<Parameter name="%JSONFIELDNAME" value="description"/>
+<Parameter name="MAXLEN"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Storage.Persistent</Type>
+<DefaultData>ModerationResponseDefaultData</DefaultData>
+<Data name="ModerationResponseDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"ModerationResponse"</Subscript>
+<Value name="1">
+<Value>Description</Value>
 </Value>
 </Data>
 </Storage>

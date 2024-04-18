@@ -73,11 +73,21 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </response>
 </call>
 </case>
+<case condition='$classname(request)="Demo.Msg.ModerationRequest"' name='Demo.Msg.ModerationRequest' >
+<call name='Moderation' target='Demo.BP.Moderation' async='1' xpos='1550' ypos='400' >
+<request type='Demo.Msg.ModerationRequest' >
+<assign property="callrequest" value="request" action="set" languageOverride="" />
+</request>
+<response type='Demo.Msg.ModerationResponse' >
+<assign property="response" value="callresponse" action="set" languageOverride="" />
+</response>
+</call>
+</case>
 <default>
 <empty name='Do nothing' xpos='1820' ypos='400' />
 </default>
 </switch>
-<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models,Audio managment,Audio Speach' type='all' xpos='200' ypos='600' />
+<sync name='Wait calls' calls='Create new image,Retrieve models,Create a chat,Retrieve all models,Audio managment,Audio Speach,Moderation' type='all' xpos='200' ypos='600' />
 </sequence>
 </process>
 }
